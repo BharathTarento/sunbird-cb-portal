@@ -4,7 +4,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router'
 import { WidgetContentService } from '@sunbird-cb/collection/src/lib/_services/widget-content.service'
 // import { NsContent } from '@sunbird-cb/collection'
-import { ConfigurationsService, NsPage, ValueService } from '@sunbird-cb/utils'
+import { ConfigurationsService, NsPage, ValueService,UtilityService } from '@sunbird-cb/utils'
 import { Subscription } from 'rxjs'
 import { ViewerDataService } from '../../viewer-data.service'
 import { ViewerUtilService } from '../../viewer-util.service'
@@ -48,6 +48,7 @@ export class ViewerTopBarComponent implements OnInit, OnDestroy {
   userid: any
   channelId: any
   optionalLink = false
+  @Output() hideHeader = new EventEmitter<boolean>()
   // primaryCategory = NsContent.EPrimaryCategory
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -60,6 +61,7 @@ export class ViewerTopBarComponent implements OnInit, OnDestroy {
     private router: Router,
     private widgetServ: WidgetContentService,
     private viewerSvc: ViewerUtilService,
+    private utilityService: UtilityService,
   ) {
     this.valueSvc.isXSmall$.subscribe(isXSmall => {
       this.logo = !isXSmall
@@ -67,6 +69,7 @@ export class ViewerTopBarComponent implements OnInit, OnDestroy {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.currentRoute = event.url
+        this.resourceUrl(this.currentRoute)
       }
     })
   }
@@ -279,5 +282,8 @@ export class ViewerTopBarComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigateByUrl(`public/toc/${this.collectionId}/overview`)
     }
+  }
+  resourceUrl(url:string) {
+      this.hideHeader.emit(url.includes('html') && this.utilityService.isMobile?true:false)
   }
 }

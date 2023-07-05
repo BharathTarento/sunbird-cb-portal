@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { NsContent, WidgetContentService } from '@sunbird-cb/collection'
 import { NsWidgetResolver } from '@sunbird-cb/resolver'
 import { ConfigurationsService, UtilityService, ValueService } from '@sunbird-cb/utils'
@@ -59,6 +59,11 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterViewChecked {
     private configSvc: ConfigurationsService,
   ) {
     this.rootSvc.showNavbarDisplay$.next(false)
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.checkTopBar(event.url.includes('html') )
+      }
+    })
   }
 
   getContentData(e: any) {
@@ -84,6 +89,8 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterViewChecked {
       window.location.href.includes('/embed/') ||
       this.activatedRoute.snapshot.queryParams.embed === 'true'
     )
+    this.checkTopBar(undefined);
+    
     this.isTypeOfCollection = this.activatedRoute.snapshot.queryParams.collectionType ? true : false
     this.screenSizeSubscription = this.isLtMedium$.subscribe(isSmall => {
       // this.sideNavBarOpened = !isSmall
@@ -162,5 +169,10 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterViewChecked {
   get isPreview(): boolean {
     this.forPreview = window.location.href.includes('/public/') || window.location.href.includes('&preview=true')
     return this.forPreview
+  }
+
+  checkTopBar(data: any) {
+   
+    this.isNotEmbed = data || (window.location.href.includes('html') && this.utilitySvc.isMobile)? false: true
   }
 }
