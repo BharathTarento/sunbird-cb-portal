@@ -87,6 +87,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   yearPattern = '(^[0-9]{4}$)'
   namePatern = `^[a-zA-Z\\s\\']{1,32}$`
   telephonePattern = `^[0-9]+-?[0-9]+$`
+
+  // namePatern = '^a-zA-Z\\s\\'
+  // telephonePattern = '^[0-9]+-?[0-9]+$'
   emailLengthVal = false
   @ViewChild('toastSuccess', { static: true }) toastSuccess!: ElementRef<any>
   @ViewChild('toastError', { static: true }) toastError!: ElementRef<any>
@@ -120,6 +123,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   timerSubscription: Subscription | null = null
   timeLeftforOTP = 0
   isMobileVerified = false
+  isEmailVerified = false
+  timeLeftforOTPEmail = 0
+  otpEmailSend = false
+  OTP_TIMER_EMAIL = environment.resendOTPTIme
+  disableEmailBtn = true
+  timerSubscriptionEmail: Subscription | null = null
   degreefilteredOptions: INameField[] | undefined
   postDegreefilteredOptions: INameField[] | undefined
   disableVerifyBtn = false
@@ -215,6 +224,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.init()
     this.checkIfMobileNoChanged()
     this.onPhoneChange()
+    this.onEmailChange()
   }
 
   displayFnPosition = (value: any) => {
@@ -237,6 +247,24 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         })
     }
   }
+  checkIfEmailNoChanged(): void {
+    // this.createUserForm.controls['mobile'].valueChanges.subscribe((oldValue: any) => {
+    //   if (oldValue) { }
+    //   this.isMobileVerified = false
+    // })
+    const ctrl = this.createUserForm.get('primaryEmail')
+    if (ctrl) {
+      ctrl
+        .valueChanges
+        .pipe(startWith(null), pairwise())
+        .subscribe(([prev, next]: [any, any]) => {
+          if (!(prev == null && next)) {
+            this.isEmailVerified = false
+          }
+        })
+    }
+  }
+
   fetchMeta() {
     this.userProfileSvc.getMasterCountries().subscribe(
       data => {
@@ -690,6 +718,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           }
           if (data.profileDetails && (userData.id || userData.userId)) {
             this.isMobileVerified = _.get(data, 'profileDetails.personalDetails.phoneVerified') && true
+            this.isEmailVerified = _.get(data, 'profileDetails.personalDetails.primaryEmail') && true
             const academics = this.populateAcademics(userData)
             this.setDegreeValuesArray(academics)
             this.setPostDegreeValuesArray(academics)
@@ -939,6 +968,23 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         })
     }
   }
+
+  onEmailChange() {
+    const ctrl = this.createUserForm.get('primaryEmail')
+    if (ctrl) {
+      ctrl
+        .valueChanges
+        .pipe(startWith(null), pairwise())
+        .subscribe(([prev, next]: [any, any]) => {
+          if (!(prev == null && next)) {
+            this.isEmailVerified = false
+            this.otpSend = false
+            this.disableVerifyBtn = false
+          }
+        })
+    }
+  }
+
   checkvalue(value: any) {
     if (value && value === 'undefined') {
       // tslint:disable-next-line:no-parameter-reassignment
@@ -1721,7 +1767,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   sendOtp() {
     const mob = this.createUserForm.get('mobile')
     if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
-      this.otpService.sendOtp(mob.value).subscribe(() => {
+      this.otpService.sendOtp(mob.value, 'phone').subscribe(() => {
         this.otpSend = true
         alert('An OTP has been sent to your mobile number')
         this.startCountDown()
@@ -1736,7 +1782,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   resendOTP() {
     const mob = this.createUserForm.get('mobile')
     if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
-      this.otpService.resendOtp(mob.value).subscribe((res: any) => {
+      this.otpService.resendOtp(mob.value, 'phone').subscribe((res: any) => {
         if ((_.get(res, 'result.response')).toUpperCase() === 'SUCCESS') {
           this.otpSend = true
           this.disableVerifyBtn = false
@@ -1756,7 +1802,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     const mob = this.createUserForm.get('mobile')
     if (otp && otp.value) {
       if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
-        this.otpService.verifyOTP(otp.value, mob.value).subscribe((res: any) => {
+        this.otpService.verifyOTP(otp.value, mob.value, 'phone').subscribe((res: any) => {
           if ((_.get(res, 'result.response')).toUpperCase() === 'SUCCESS') {
             this.otpVerified = true
             const reqUpdates = {
@@ -1811,6 +1857,103 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             this.timeLeftforOTP = 0
             if (this.timerSubscription) {
               this.timerSubscription.unsubscribe()
+            }
+            // this.submitQuiz()
+          }
+        })
+    }
+  }
+
+  sendOtpEmail() {
+    const email = this.createUserForm.get('primaryEmail')
+    if (email && email.value && email.valid) {
+      this.otpService.sendOtp(email.value, 'email').subscribe(() => {
+        this.otpEmailSend = true
+        alert('An OTP has been sent to your registered email address (valid for 15 minutes)')
+        this.startCountDownEmail()
+        // tslint:disable-next-line: align
+      }, (error: any) => {
+        this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
+      })
+    } else {
+      this.snackBar.open('Please enter a valid email address.')
+    }
+  }
+
+  resendOTPEmail() {
+    const email = this.createUserForm.get('emaprimaryEmailil')
+    if (email && email.value && email.valid) {
+      this.otpService.resendOtp(email.value, 'email').subscribe((res: any) => {
+        if ((_.get(res, 'result.response')).toUpperCase() === 'SUCCESS') {
+          this.otpEmailSend = true
+          alert('An OTP has been sent to your registered email address (valid for 15 minutes)')
+          this.startCountDownEmail()
+        }
+        // tslint:disable-next-line: align
+      }, (error: any) => {
+        this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
+      })
+    } else {
+      this.snackBar.open('Please enter a valid email address.')
+    }
+  }
+
+  verifyOtpEmail(otp: any) {
+    const email = this.createUserForm.get('primaryEmail')
+    if (otp && otp.value) {
+      if (otp && otp.value.length < 4) {
+        this.snackBar.open('Please enter a valid OTP.')
+      } else if (email && email.value && email.valid) {
+        this.otpService.verifyOTP(otp.value, email.value, 'email').subscribe((res: any) => {
+          if ((_.get(res, 'result.response')).toUpperCase() === 'SUCCESS') {
+            this.otpEmailSend = true
+            this.isEmailVerified = true
+            this.disableEmailBtn = false
+            // const reqUpdates = {
+            //   request: {
+            //     userId: this.configSvc.unMappedUser.id,
+            //     profileDetails: {
+            //       personalDetails: {
+            //         mobile: mob.value,
+            //         phoneVerified: true,
+            //       },
+            //     },
+            //   },
+            // }
+            // this.userProfileSvc.editProfileDetails(reqUpdates).subscribe((updateRes: any) => {
+            //   if (updateRes) {
+            //     this.isMobileVerified = true
+            //   }
+            // })
+          }
+          // tslint:disable-next-line: align
+        }, (error: any) => {
+          this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
+        })
+      }
+    } else {
+      this.snackBar.open('Please enter a valid OTP.')
+    }
+  }
+  startCountDownEmail() {
+    const startTime = Date.now()
+    this.timeLeftforOTPEmail = this.OTP_TIMER_EMAIL
+    // && this.primaryCategory !== this.ePrimaryCategory.PRACTICE_RESOURCE
+    if (this.OTP_TIMER_EMAIL > 0
+    ) {
+      this.timerSubscriptionEmail = interval(1000)
+        .pipe(
+          map(
+            () =>
+              startTime + this.OTP_TIMER_EMAIL - Date.now(),
+          ),
+        )
+        .subscribe(_timeRemaining => {
+          this.timeLeftforOTPEmail -= 1
+          if (this.timeLeftforOTPEmail < 0) {
+            this.timeLeftforOTPEmail = 0
+            if (this.timerSubscriptionEmail) {
+              this.timerSubscriptionEmail.unsubscribe()
             }
             // this.submitQuiz()
           }

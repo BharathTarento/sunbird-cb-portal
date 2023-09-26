@@ -13,31 +13,31 @@ export class OtpService {
         private http: HttpClient,
     ) {
     }
-    sendOtp(mob: number): Observable<any> {
+    sendOtp(value: number, type: string): Observable<any> {
         const reqObj = {
             request: {
-                type: 'phone',
-                key: `${mob}`,
+                type,
+                key: `${value}`,
             },
         }
         return this.http.post(API_ENDPOINTS.sendOtp, reqObj)
     }
-    resendOtp(mob: number) {
+    resendOtp(value: number, type: string) {
         const reqObj = {
             request: {
-                type: 'phone',
-                key: `${mob}`,
+                type,
+                key: `${value}`,
             },
         }
         return this.http.post(API_ENDPOINTS.ReSendOtp, reqObj)
 
     }
-    verifyOTP(otp: number, mob: number) {
+    verifyOTP(otp: number, value: number, type: string) {
         const reqObj = {
             request: {
                 otp,
-                type: 'phone',
-                key: `${mob}`,
+                type,
+                key: `${value}`,
             },
         }
         return this.http.post(API_ENDPOINTS.VerifyOtp, reqObj)
