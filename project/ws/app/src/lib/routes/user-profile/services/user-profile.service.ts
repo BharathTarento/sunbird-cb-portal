@@ -27,6 +27,8 @@ const API_ENDPOINTS = {
   getPendingFields: '/apis/protected/v8/workflowhandler/userWFApplicationFieldsSearch',
   getDesignation: '/apis/proxies/v8/user/v1/positions',
   editProfileDetails: '/apis/proxies/v8/user/v1/extPatch',
+  CREATE_ASSET: 'apis/proxies/v8/action/content/v3/create',
+  UPLOAD_FILE: 'apis/proxies/v8/upload/action/content/v3/upload',
 }
 
 @Injectable()
@@ -79,5 +81,16 @@ export class UserProfileService {
 
   getDesignations(_req: any): Observable<IProfileMetaApiData> {
     return this.http.get<IProfileMetaApiData>(API_ENDPOINTS.getDesignation)
+  }
+  createAsset(req: any): Observable<any> {
+    return this.http.post<any>(`${API_ENDPOINTS.CREATE_ASSET}`, req)
+  }
+  uploadFile(val: any, formdata: any): Observable<any> {
+    this.http.post<any>(`${API_ENDPOINTS.UPLOAD_FILE}/${val}`, formdata, {
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+    return this.http.post<any>(`${API_ENDPOINTS.UPLOAD_FILE}/${val}`, formdata)
   }
 }

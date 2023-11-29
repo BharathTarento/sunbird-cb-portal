@@ -1750,18 +1750,47 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       next: (result: File) => {
         if (result) {
           formdata.append('content', result, fileName)
-          this.loader.changeLoad.next(true)
-          const reader = new FileReader()
-          reader.readAsDataURL(result)
-          reader.onload = _event => {
-            this.photoUrl = reader.result
-            if (this.createUserForm.get('photo') !== undefined) {
-              // tslint:disable-next-line: no-non-null-assertion
-              this.createUserForm.get('photo')!.setValue(this.photoUrl)
-            }
-          }
+          this.createUrl(result)
+          // const reader = new FileReader()
+          // reader.readAsDataURL(result)
+          // reader.onload = _event => {
+          //   this.photoUrl = reader.result
+          //   if (this.createUserForm.get('photo') !== undefined) {
+          //     // tslint:disable-next-line: no-non-null-assertion
+          //     this.createUserForm.get('photo')!.setValue(this.photoUrl)
+          //   }
+          // }
         }
       },
+    })
+  }
+  createUrl(file: File) {
+    const userData: any = this.configSvc.userProfile
+    const request = {
+      request: {
+        content: {
+          name: 'image asset',
+          creator: userData.firstName,
+          createdBy: userData.userId,
+          code: 'image asset',
+          mimeType: file.type,
+          mediaType: 'image',
+          contentType: 'Asset',
+          primaryCategory: 'Asset',
+          organisation: [userData.rootOrgName],
+          createdFor: [userData.rootOrgId],
+        },
+      },
+    }
+    this.userProfileSvc.createAsset(request).subscribe((res: any) => {
+      const contentID = res.result.identifier
+      const formData: FormData = new FormData()
+      formData.append('data', file)
+
+      this.userProfileSvc.uploadFile(contentID, formData).subscribe((fdata: any) => {
+        this.photoUrl = fdata.result.artifactUrl
+        this.loader.changeLoad.next(true)
+      })
     })
   }
   sendOtp() {
