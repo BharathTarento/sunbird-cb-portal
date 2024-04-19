@@ -1,0 +1,93 @@
+@import 'ws-mixins';
+@import 'ws-common';
+
+.competency-theme {
+    height: 16px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background-color: rgb(248, 184, 97);
+}
+
+.details {
+    background-color: #fff;
+    border-radius: 12px;
+    position: relative;
+    top: -8px;
+}
+
+.name {
+    font-family: Montserrat;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19.5px;
+    text-align: left;
+}
+
+.description {
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+    height: 51px;
+}
+
+.no-of-contents {
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16.8px;
+    text-align: center;
+    color: #1B4CA1;
+}
+.content-icon {
+    color: #1B4CA1;
+}
+
+.line {
+    border-top: 1px solid #e2dddd;
+}
+
+.chip {
+    padding: 12px 16px 12px 16px;
+    gap: 8px;
+    border-radius: 50px;
+    border: 1px solid #1b4ca1;
+    color: #1b4ca1;
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16.8px;
+    text-align: center;
+}
+.chip-ellipsis {
+    white-space: nowrap;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.info-btn {
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16.8px;
+    text-align: center;
+    opacity: 0.7;
+    padding: 12px 5px 12px 5px;
+}
+
+.hide {
+    display: none;
+}
+
+.behavioral {
+    background-color: #F8B861;
+}
+
+.functional {
+    background-color: #E24577;
+}
+
+.domain {
+    background-color: #7B47A4;
+}

@@ -282,9 +282,107 @@ export class MicrosotesComponent implements OnInit {
           "active": true,
           "enabled": true,
           "key": "competency",
+          "title": "Competency Strength",
+          "colspan": 12,
+          "background": 'competencies-backgroud',
+          "data": [
+            {
+              name: 'Collaboration',
+              description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 12,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency"
+              ],
+              viewMore: false,
+            },
+            {
+              name: 'Network Systems Maintenance',
+              description: "Network Systems Maintenance Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 4,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency",
+                "Knowledge Sharing",
+                "Planning & Prioritization",
+                "Goal Setting",
+                "Stress Management",
+                "Dissemination of Information",
+                "Handling Allowances & Reimbursement"
+              ],
+              viewMore: true,
+            },
+            {
+              name: 'Collaborative Leadership',
+              description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 14,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency",
+                "Knowledge Sharing",
+                "Planning & Prioritization",
+                "Goal Setting",
+                "Stress Management",
+                "Dissemination of Information",
+                "Handling Allowances & Reimbursement"
+              ],
+              viewMore: true,
+            },
+            {
+              name: 'Office Management',
+              description: "Office Management Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 44,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency",
+                "Knowledge Sharing",
+                "Planning & Prioritization",
+                "Goal Setting",
+                "Stress Management",
+                "Dissemination of Information",
+                "Handling Allowances & Reimbursement"
+              ],
+              viewMore: true,
+            },
+            {
+              name: 'Administration Matters',
+              description: "Administration Matters Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 9,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency",
+                "Knowledge Sharing",
+                "Planning & Prioritization",
+                "Goal Setting",
+                "Stress Management",
+                "Dissemination of Information",
+                "Handling Allowances & Reimbursement"
+              ],
+              viewMore: true,
+            },
+          ],
+        }
+      ],
+    },
+    {
+      "active": true,
+      "enabled": true,
+      "title": "",
+      "key": "row6",
+      "order": 6,
+      "column": [
+        {
+          "active": true,
+          "enabled": true,
+          "key": "learner",
           "title": "",
           "colspan": 12,
-          "data":  ''
+          "data":  [],
         }
       ],
     }
