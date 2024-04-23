@@ -134,16 +134,30 @@
         <div class="mt-10 mb-10">
             <div class="competency-title">{{competency.title}} <span class="competency-count">({{competency.data.length}})</span></div>
             <div class="flex items-center justify-center gap-8 mt-5 mb-5 competency-filters">
-                <div><button class="filter-button active">Behavioural (4)</button></div>
-                <div><button class="filter-button">Functional (6)</button></div>
-                <div><button class="filter-button">Domain (10)</button></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 w-full grid-flow-row gap-5">
-                <div *ngFor="let obj of competency?.data">
-                    <ws-microsites-competencies [objectData]="obj"></ws-microsites-competencies>
+                <div>
+                    <button class="filter-button"
+                        (click)="filter('Behavioural')"
+                        [ngClass]="{'active' : currentFilter === 'Behavioural'}">Behavioural (4)
+                    </button>
+                </div>
+                <div>
+                    <button class="filter-button" 
+                        [ngClass]="{'active' : currentFilter === 'Functional'}"
+                        (click)="filter('Functional')">Functional (6)
+                    </button>
+                </div>
+                <div>
+                    <button class="filter-button" 
+                        [ngClass]="{'active' : currentFilter === 'Domain'}" 
+                        (click)="filter('Domain')">Domain (10)
+                    </button>
                 </div>
             </div>
-              
+            <div class="grid grid-cols-1 md:grid-cols-3 w-full grid-flow-row gap-5">
+                <div *ngFor="let obj of currentCompetencies">
+                    <ws-microsites-competencies [objectData]="obj"></ws-microsites-competencies>
+                </div>
+            </div>              
         </div>
     </div>
 </ng-template>

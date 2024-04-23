@@ -6,6 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./microsotes.component.scss']
 })
 export class MicrosotesComponent implements OnInit {
+
+  currentFilter = 'Behavioural'
+  currentCompetencies: any = []
+  competencyData: any
+
   sectionList = [
     {
       "active": true,
@@ -287,6 +292,79 @@ export class MicrosotesComponent implements OnInit {
           "background": 'competencies-backgroud',
           "data": [
             {
+              name: 'Functional one',
+              description: "Functional oneLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 7,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency"
+              ],
+              viewMore: false,
+              type: "Functional",
+            },
+            {
+              name: 'Functional two',
+              description: "Functional two Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 10,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency"
+              ],
+              viewMore: false,
+              type: "Functional",
+            },
+            {
+              name: 'Functional three',
+              description: "Functional three Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 16,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency"
+              ],
+              viewMore: false,
+              type: "Functional",
+            },
+            {
+              name: 'Domain one',
+              description: "Domain two Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 10,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency"
+              ],
+              viewMore: false,
+              type: "Domain",
+            },
+            {
+              name: 'Domain two',
+              description: "Domain two Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 12,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency"
+              ],
+              viewMore: false,
+              type: "Domain",
+            },
+            {
+              name: 'Domain three',
+              description: "Domain three Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              contentCount: 19,
+              subTheme: [
+                "Relationship Management",
+                "Conflict Management",
+                "Verbal & Non-Verbal Fluency",
+                "Testing"
+              ],
+              viewMore: true,
+              type: "Domain",
+            },
+            {
               name: 'Collaboration',
               description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
               contentCount: 12,
@@ -296,6 +374,7 @@ export class MicrosotesComponent implements OnInit {
                 "Verbal & Non-Verbal Fluency"
               ],
               viewMore: false,
+              type: "Behavioural",
             },
             {
               name: 'Network Systems Maintenance',
@@ -313,6 +392,7 @@ export class MicrosotesComponent implements OnInit {
                 "Handling Allowances & Reimbursement"
               ],
               viewMore: true,
+              type: "Behavioural",
             },
             {
               name: 'Collaborative Leadership',
@@ -330,6 +410,7 @@ export class MicrosotesComponent implements OnInit {
                 "Handling Allowances & Reimbursement"
               ],
               viewMore: true,
+              type: "Behavioural",
             },
             {
               name: 'Office Management',
@@ -347,6 +428,7 @@ export class MicrosotesComponent implements OnInit {
                 "Handling Allowances & Reimbursement"
               ],
               viewMore: true,
+              type: "Behavioural",
             },
             {
               name: 'Administration Matters',
@@ -364,6 +446,7 @@ export class MicrosotesComponent implements OnInit {
                 "Handling Allowances & Reimbursement"
               ],
               viewMore: true,
+              type: "Behavioural",
             },
           ],
         }
@@ -391,7 +474,13 @@ export class MicrosotesComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.competencyData = this.sectionList.filter(data => data.key === 'row5')
+    this.filter(this.currentFilter)
+  }
+
+  filter(filterValue: string) {
+    this.currentFilter = filterValue
+    this.currentCompetencies = this.competencyData[0].column[0].data.filter((item: any) => item.type === filterValue)
   }
   
-
 }
