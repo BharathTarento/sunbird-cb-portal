@@ -7,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class MicrositesCompetenciesComponent implements OnInit {
   subTheme = ['Behavioural']
-  @Input() objectData: any;
+  @Input() objectData: any
 
   constructor() { 
     

@@ -1,0 +1,41 @@
+
+<div class="w-full" *ngIf="layoutType === 'multipleRows'">
+    <div *ngFor="let obj of objectData.data">
+        <div class="element-div">
+            <div class="flex gap-6 items-top">
+                <div>
+                    <img class="objIcon" [ngClass]="obj.iconColor" [src]="obj.icon">
+                </div>
+                <div class="{{obj.headercolor}} objHeader" class="pb-3">{{obj.header}}</div>
+            </div>
+            <div class="flex gap-6 items-center pb-1">
+                <div class="empty-div"></div>
+                <div class="{{obj.descriptionColor}} objDescription">{{obj.description}}</div>
+            </div>        
+        </div>
+    </div>
+</div>
+
+<div class="w-full" *ngIf="layoutType === 'singleRow'">
+    <div class="flex gap-2">
+        <div *ngFor="let obj of objectData.data">
+            <div class="melement-div {{obj.background}}">
+                <div class="flex gap-3 items-top">
+                    <div>
+                        <img class="mobjIcon" [ngClass]="obj.iconColor" [src]="obj.icon">
+                    </div>
+                    <div class="{{obj.headercolor}} mobjHeader" class="pb-3">{{obj.header}}</div>
+                </div>
+                <div class="flex gap-3 items-center">
+                    <div class="mempty-div"></div>
+                    <div class="{{obj.descriptionColor}} mobjDescription">{{obj.description}}</div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+
+<div class="w-full" *ngIf="layoutType === 'twoRows'">
+       
+</div>
+

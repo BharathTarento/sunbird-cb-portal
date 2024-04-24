@@ -20,6 +20,12 @@
                                     [ngTemplateOutletContext]="{competency: column}"></ng-container>
                                 <ng-container *ngSwitchCase="'learner'" [ngTemplateOutlet]="learner"
                                     [ngTemplateOutletContext]="{learner: column.data}"></ng-container>
+                                <ng-container *ngSwitchCase="'bmetrics'" [ngTemplateOutlet]="bmetrics"
+                                    [ngTemplateOutletContext]="{bmetrics: column}"></ng-container>
+                                <ng-container *ngSwitchCase="'mbmetrics'" [ngTemplateOutlet]="mbmetrics"
+                                    [ngTemplateOutletContext]="{mbmetrics: column}"></ng-container>
+                                <ng-container *ngSwitchCase="'infra'" [ngTemplateOutlet]="infra"
+                                    [ngTemplateOutletContext]="{infra: column}"></ng-container>
                             </ng-container>
                         </div>
                     </ng-container>
@@ -167,4 +173,16 @@
     <div class="w-full ">
         <h1 class="">Learners coming soon...</h1>
     </div>
+</ng-template>
+
+<ng-template #bmetrics let-bmetrics="bmetrics">
+    <ws-competencies-metrics [objectData]="bmetrics" [layoutType]="'multipleRows'"></ws-competencies-metrics>
+</ng-template>
+
+<ng-template #mbmetrics let-mbmetrics="mbmetrics">
+    <ws-competencies-metrics [objectData]="mbmetrics" [layoutType]="'singleRow'"></ws-competencies-metrics>
+</ng-template>
+
+<ng-template #infra let-infra="infra">
+    <ws-competencies-metrics [objectData]="infra" [layoutType]="'twoRows'"></ws-competencies-metrics>
 </ng-template>

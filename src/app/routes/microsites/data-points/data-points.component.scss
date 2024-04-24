@@ -1,0 +1,74 @@
+@import 'ws-mixins';
+@import 'ws-common';
+
+.white {
+    color: white;
+}
+
+.black {
+    color: black;
+}
+.objIcon {
+    width: 32px;
+    height: 32px;
+}
+.mobjIcon {
+    width: 24px;
+    height: 24px;
+}
+.objHeader {
+    font-family: Montserrat;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 29.26px;
+    text-align: left;
+}
+.mobjHeader{
+    font-family: Montserrat;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19.5px;
+    text-align: left;
+}
+
+.objDescription {
+    font-family: Lato;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: left;
+}
+.mobjDescription {
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+}
+.empty-div {
+    min-width: 34px;
+}
+.mempty-div {
+    min-width: 27px;
+}
+.element-div {
+    padding: 25px 0px;
+    margin: 0 25px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+.melement-div {
+    padding: 16px;
+    border-radius: 15px;
+    width: 249px;
+}
+.banner-metrics {
+    background: linear-gradient(180deg, #F9CB97 -107.59%, #EF951E 110.74%);
+}
+
+.infra-background {
+    background: #1B4CA1;
+}
+
+
+
