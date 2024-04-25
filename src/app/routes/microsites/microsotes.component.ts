@@ -601,6 +601,7 @@ export class MicrosotesComponent implements OnInit {
           "background": 'infra-background',
           "title": "",
           "colspan": 12,
+          "dataColSpan": 2,
           "data":  [
             {
               icon: "https://portal.karmayogi.nic.in/content-store/content/do_114041375850471424132/artifact/do_114041375850471424132_1714035157784_group.svg",
