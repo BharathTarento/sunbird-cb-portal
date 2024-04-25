@@ -1,7 +1,7 @@
 
 <div class="w-full" *ngIf="layoutType === 'multipleRows'">
     <div *ngFor="let obj of objectData.data">
-        <div class="element-div">
+        <div class="element-div" [ngClass]="{'linebreak': obj.linebreak}">
             <div class="flex gap-6 items-top">
                 <div>
                     <img class="objIcon" [ngClass]="obj.iconColor" [src]="obj.icon">
@@ -36,6 +36,22 @@
 </div>
 
 <div class="w-full" *ngIf="layoutType === 'twoRows'">
+    <div class="grid grid-cols-2 grid-flow-row gap-2">
+        <div *ngFor="let obj of objectData.data">        
+            <div class="element-div" [ngClass]="{'linebreak': obj.linebreak}">
+                <div class="flex gap-6 items-flex-start">
+                    <div>
+                        <img class="objIcon" [ngClass]="obj.iconColor" [src]="obj.icon">
+                    </div>
+                    <div class="{{obj.headercolor}} infra-objHeader" class="pb-3">{{obj.header}}</div>
+                </div>
+                <div class="flex gap-6 items-center pb-1">
+                    <div class="empty-div"></div>
+                    <div class="{{obj.descriptionColor}} objDescription">{{obj.description}}</div>
+                </div>        
+            </div>
+        </div>
+    </div>
        
 </div>
 
