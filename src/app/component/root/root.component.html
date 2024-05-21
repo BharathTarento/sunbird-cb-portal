@@ -23,7 +23,8 @@
     navBarRequired &&
     !isCustomHeight && !hideHeaderAndFooter
 }">
-  <div class="abc" [ngClass]="{'margin186': mobileTopHeaderVisibilityStatus && showHubs, 'mt-0': !mobileTopHeaderVisibilityStatus && showHubs, 'mt-136': mobileTopHeaderVisibilityStatus && !viewerPage && !hideHeaderAndFooter, 'mt-4': !mobileTopHeaderVisibilityStatus && !showHubs && !viewerPage }">
+
+  <div class="abc" [ngClass]="{'margin186': mobileTopHeaderVisibilityStatus && showHubs, 'mt-0': !mobileTopHeaderVisibilityStatus && showHubs, 'mt-136': mobileTopHeaderVisibilityStatus && !showHubs && !viewerPage && !hideHeaderAndFooter, 'mt-4': !mobileTopHeaderVisibilityStatus && !showHubs && !viewerPage }">
     <router-outlet></router-outlet>
   </div> 
 </div>

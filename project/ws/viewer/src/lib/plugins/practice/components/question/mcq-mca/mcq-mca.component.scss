@@ -104,3 +104,12 @@
 .incorrect-option {
   font-weight: bold;
 }
+
+@media only screen and (min-width : 360px) and (max-width: 390px) { 
+  .mat-list-base .mat-list-item, .mat-list-base .mat-list-option {
+    width:auto !important;
+    min-height: 48px;
+    height: auto !important;
+    word-wrap: break-word;
+  }
+}

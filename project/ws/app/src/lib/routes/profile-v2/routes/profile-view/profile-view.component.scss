@@ -415,6 +415,10 @@ $border-color: rgba($color: #000000, $alpha: 0.16);
   line-height: 16px;
   font-size: 14px;
 }
+
+.employee-value {
+  word-wrap: break-word;
+}
 // Insights SCSS...
 
 @media screen and (max-width: 641px) {

@@ -12,6 +12,8 @@
                                 <ng-container *ngIf="column?.enabled" [ngSwitch]="column?.key">
                                     <ng-container *ngSwitchCase="'topSection'" [ngTemplateOutlet]="topSection"
                                         [ngTemplateOutletContext]="{data: column?.data}"></ng-container>
+                                    <ng-container *ngSwitchCase="'contributors'" [ngTemplateOutlet]="contributors"
+                                        [ngTemplateOutletContext]="{data: column?.data}"></ng-container>
                                     <ng-container *ngSwitchCase="'infra'" [ngTemplateOutlet]="infra"
                                         [ngTemplateOutletContext]="{infra: column?.data}"></ng-container>
                                     <ng-container *ngSwitchCase="'contentFeaturedStrip'" [ngTemplateOutlet]="contentStrip"
@@ -42,7 +44,6 @@
     </div>
 
 </div>
-
 
 <ng-template #topSection let-data="data">
     <!-- <div class="w-full grid grid-cols-12 gap-4"> -->
@@ -93,6 +94,36 @@
             </div>
         </div>
     </ng-container>
+</ng-template>
+
+<ng-template #contributors  let-data="data">
+    <div class="contributors-background px-5" [style.background]="data?.background">
+        <div class="container">
+            <div class="grid grid-cols-12 gap-4 padding-top-l mb-6">
+                <div class="col-span-12 md:col-span-3 contributor-desc">
+                    <div class="infra-box flex flex-col">
+                        <div class="infra-title hidden md:block">
+                            {{data.detaulTitle}}
+                        </div>
+                        <div class="infra-title2 hidden md:block">
+                            {{data.myTitle}}
+                        </div>
+                        <div class="block md:hidden">
+                            <span class="infra-title">{{data.detaulTitle}}</span> <span class="infra-title2"> {{data.myTitle}}</span>
+                        </div>
+                        <div class="infra-description padding-top-s">
+                            {{data.description}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-12 md:col-span-9">
+                    <sb-uic-common-strip [widgetData]="data"></sb-uic-common-strip>
+                </div>
+            </div>
+            <div class="w-full section-divider pt-6">
+            </div>
+        </div>
+    </div>
 </ng-template>
 
 <ng-template #infra let-infra="infra">

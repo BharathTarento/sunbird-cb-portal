@@ -38,7 +38,7 @@ export class BtnPageBackComponent extends WidgetBaseComponent
   implements OnInit, NsWidgetResolver.IWidgetData<{ url: TUrl }> {
 
   @Input() widgetData: { url: TUrl, titles?: NsWidgetResolver.ITitle[],
-     disableTranslate?: boolean } = { url: 'none', titles: [], disableTranslate: false }
+     disableTranslate?: boolean, textClass: any } = { url: 'none', titles: [], disableTranslate: false, textClass: '' }
   presentUrl = ''
   @HostBinding('id')
   public id = 'nav-back'

@@ -75,7 +75,7 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
   }
 
   verifyMobileOTP(): void {
-    this.otpService.verifyOTP(Number(this.otpEntered), this.data.value)
+    this.otpService.verifyOTP(this.otpEntered, this.data.value)
     .pipe(takeUntil(this.destroySubject$))
     .subscribe((_res: any) => {
       this.matSnackbar.open(this.handleTranslateTo('OTPSentSuccess'))

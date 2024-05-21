@@ -9,6 +9,10 @@
     max-width: 1200px;
 }
 
+.section-divider {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+}
+
 .banner-container{
     align-items: center;
     background: #eee;
@@ -122,6 +126,13 @@
     justify-content: center;
     display: flex;
 }
+
+.contributor-desc {
+    align-items: center;
+    display: inline-flex;
+    margin-top: -24px;
+}
+
 .infra-box {
     width: 256px;
     height: 146px;       

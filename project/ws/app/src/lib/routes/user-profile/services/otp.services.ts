@@ -34,7 +34,7 @@ export class OtpService {
         return this.http.post(API_ENDPOINTS.ReSendOtp, reqObj)
 
     }
-    verifyOTP(otp: number, mob: number) {
+    verifyOTP(otp: string, mob: number) {
         const reqObj = {
             request: {
                 otp,

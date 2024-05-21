@@ -186,7 +186,7 @@
               <div class="info-div">
                 <div class="label">{{ 'profileInfo.employeeId' | translate }}</div>
                 <ng-container *ngIf="!editDetails">
-                  <div class="info-value">{{ portalProfile?.employmentDetails?.employeeCode || 'NA' }}</div>
+                  <div class="info-value employee-value">{{ portalProfile?.employmentDetails?.employeeCode || 'NA' }}</div>
                 </ng-container>
                 <div class="flex flex-col" *ngIf="editDetails">
                   <mat-form-field class="profile-form-field">
