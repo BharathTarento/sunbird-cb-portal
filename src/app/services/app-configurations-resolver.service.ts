@@ -3,7 +3,10 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { ConfigurationsService, IResolveResponse } from '@sunbird-cb/utils'
 import { Observable, of } from 'rxjs'
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
+
 export class AppConfigurationsResolverService implements Resolve<Observable<any>> {
 
   constructor(private configSvc: ConfigurationsService) { }

@@ -44,7 +44,7 @@ import { HttpClient } from '@angular/common/http'
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core'
 import { HttpLoaderFactory } from 'src/app/app.module'
 import { ProviderPageComponent } from './routes/provider-page/provider-page.component'
-import { CompetencyPassbookModule, ContentStripWithTabsLibModule, DataPointsModule, SlidersLibModule } from '@sunbird-cb/consumption'
+import { CompetencyPassbookModule, ContentStripWithTabsLibModule, DataPointsModule, SlidersLibModule, UserContentRatingModule } from '@sunbird-cb/consumption'
 import { ProviderFormResolverService } from './services/provider-form-resolver.service'
 import { FormExtService } from 'src/app/services/form-ext.service'
 
@@ -98,6 +98,7 @@ import { FormExtService } from 'src/app/services/form-ext.service'
     CompetencyPassbookModule,
     DataPointsModule,
     SlidersLibModule,
+    UserContentRatingModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

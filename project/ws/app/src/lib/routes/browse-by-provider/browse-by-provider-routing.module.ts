@@ -7,6 +7,7 @@ import { ProviderAllCbpComponent } from './routes/provider-all-cbp/provider-all-
 // import { InsightsComponent } from './routes/insights/insights.component'
 import { ProviderPageComponent } from './routes/provider-page/provider-page.component'
 import { ProviderFormResolverService } from './services/provider-form-resolver.service'
+// import { AppConfigResolveService } from 'src/app/services/app-config-resolve.service'
 
 const routes: Routes = [
   {
@@ -71,6 +72,7 @@ const routes: Routes = [
     },
     resolve: {
       formData: ProviderFormResolverService,
+      // configService: AppConfigResolveService,
     },
   },
 ]

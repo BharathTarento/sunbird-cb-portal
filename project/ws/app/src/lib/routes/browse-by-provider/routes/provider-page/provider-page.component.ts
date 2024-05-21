@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
   selector: 'ws-app-provider-page',
@@ -17,7 +17,9 @@ export class ProviderPageComponent implements OnInit {
     { title: `Providers`, url: `/app/learn/browse-by/provider/all-providers`, textClass:'ws-mat-black60-text', icon: '', disableTranslate: true }
   ]
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute,
+    public router: Router
+  ) {
 
   }
 
@@ -68,5 +70,9 @@ export class ProviderPageComponent implements OnInit {
     if (event) {
       contentStripData['hideSection'] = true
     }
+  }
+
+  showAllContent(_stripData: any){
+    this.router.navigate([`/app/learn/browse-by/provider/${this.providerName}/${this.providerId}/all-CBP`])
   }
 }

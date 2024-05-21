@@ -21,6 +21,8 @@ import {
   // NsUser,
   UserPreferenceService,
 } from '@sunbird-cb/utils'
+// import 
+//   {ConfigurationsService as configV2}from '@sunbird-cb/utils-v2'
 import { environment } from '../../environments/environment'
 /* tslint:disable */
 import _ from 'lodash'
@@ -76,6 +78,7 @@ export class InitService {
   constructor(
     private logger: LoggerService,
     private configSvc: ConfigurationsService,
+    // private configSvcV2: configV2,
     private authSvc: AuthKeycloakService,
     private widgetResolverService: WidgetResolverService,
     private sbUiResolverService: SbUiResolverService,
@@ -343,6 +346,7 @@ export class InitService {
       .get<NsInstanceConfig.IConfig>(`${this.baseUrl}/host.config.json`)
       .toPromise()
     this.configSvc.instanceConfig = publicConfig
+    // this.configSvcV2.instanceConfig = publicConfig
     this.configSvc.rootOrg = publicConfig.rootOrg
     this.configSvc.org = publicConfig.org
     // TODO: set one org as default org :: use user preference

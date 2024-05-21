@@ -101,6 +101,10 @@ import {
 WIDGET_REGISTERED_LIB_MODULES, WIDGET_REGISTRATION_LIB_CONFIG,
 } from '@sunbird-cb/consumption'
 import { PrivacyPolicyComponent } from './component/privacy-policy/privacy-policy.component'
+// import { AppConfigResolveService } from './services/app-config-resolve.service'
+
+// import 
+//   {ConfigurationsService as configV2}from '@sunbird-cb/utils-v2'
 
 @Injectable()
 export class HammerConfig extends GestureConfig {
@@ -256,11 +260,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     TncPublicResolverService,
     WelcomeUserResolverService,
     ConfigurationsService,
+    // configV2,
     PipeContentRoutePipe,
     AppTocResolverService,
     AppHierarchyResolverService,
     AppContentResolverService,
     AppEnrollmentResolverService,
+    // AppConfigResolveService,
     HttpClient,
     {
       provide: APP_BASE_HREF,
