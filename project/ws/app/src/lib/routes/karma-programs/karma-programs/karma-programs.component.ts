@@ -69,7 +69,14 @@ export class KarmaProgramsComponent implements OnInit {
       && this.route.snapshot.data.programData.data.result.data
       && this.route.snapshot.data.programData.data.result.data.length
     ) {
-      this.allProviders = this.route.snapshot.data.programData.data.result.data
+      this.allProviders = []
+      let programData: any = this.route.snapshot.data.programData.data.result.data
+      programData.forEach((prgData: any) => {
+        if(prgData.children && prgData.children.length) {
+          this.allProviders.push(prgData)
+        }
+      })
+      // this.allProviders = this.route.snapshot.data.programData.data.result.data
       // .data.result.form.data.sectionList
     }
     this.clonesProviders = this.allProviders

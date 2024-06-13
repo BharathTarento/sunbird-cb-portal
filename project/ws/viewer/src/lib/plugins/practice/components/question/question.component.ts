@@ -108,6 +108,7 @@ export class QuestionComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
   update($event: any) {
+    debugger
     this.itemSelected.emit($event)
   }
   isSelected(option: NSPractice.IOption) {

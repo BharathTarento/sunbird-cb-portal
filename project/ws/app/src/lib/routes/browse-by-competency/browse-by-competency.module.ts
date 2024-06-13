@@ -47,6 +47,9 @@ import { PopularCompetencyCardComponent } from './components/popular-competency-
 import { LocalDataService } from './services/localService'
 import { CardContentV2Module } from '@sunbird-cb/collection/src/lib/card-content-v2/card-content-v2.module'
 import { TranslateModule } from '@ngx-translate/core'
+import { AllCompetenciesV2Component } from './routes/all-competencies-v2/all-competencies-v2.component'
+import { SkeletonLoaderModule } from '@sunbird-cb/collection/src/lib/_common/skeleton-loader/skeleton-loader.module'
+import { AllCompetenciesSearchComponent } from './routes/all-competencies-search/all-competencies-search.component'
 
 @NgModule({
   declarations: [
@@ -55,6 +58,8 @@ import { TranslateModule } from '@ngx-translate/core'
     CompetencyFiltersComponent,
     CompetencyCardComponent,
     PopularCompetencyCardComponent,
+    AllCompetenciesV2Component,
+    AllCompetenciesSearchComponent,
   ],
   imports: [
     CommonModule,
@@ -96,6 +101,7 @@ import { TranslateModule } from '@ngx-translate/core'
     CardContentModule,
     CardContentV2Module,
     TranslateModule,
+    SkeletonLoaderModule,
   ],
   exports: [CompetencyFiltersComponent],
   providers: [

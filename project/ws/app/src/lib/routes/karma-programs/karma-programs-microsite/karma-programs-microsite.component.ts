@@ -22,7 +22,7 @@ export class KarmaProgramsMicrositeComponent implements OnInit {
   titles = [
     { title: 'Learn', url: '/page/learn', icon: 'school', disableTranslate: false },
     {
-      title: `Karma programs`,
+      title: `Karma Programs`,
       url: `/app/learn/karma-programs/all-programs`,
       icon: '', disableTranslate: true,
     },

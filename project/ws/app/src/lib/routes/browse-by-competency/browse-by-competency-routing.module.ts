@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router'
-import { AllCompetenciesComponent } from './routes/all-competencies/all-competencies.component'
+// import { AllCompetenciesComponent } from './routes/all-competencies/all-competencies.component'
 import { CompetencyDetailsComponent } from './routes/competency-details/competency-details.component'
 import { PageResolve } from '@sunbird-cb/utils/src/public-api'
+import { AllCompetenciesV2Component } from './routes/all-competencies-v2/all-competencies-v2.component'
 
 const routes: Routes = [
   {
@@ -10,9 +11,17 @@ const routes: Routes = [
     pathMatch: 'full',
     redirectTo: 'all-competencies',
   },
+  // {
+  //   path: 'all-competencies',
+  //   component: AllCompetenciesComponent,
+  //   data: {
+  //     pageId: 'all-competencies',
+  //     module: 'Competency',
+  //   },
+  // },
   {
     path: 'all-competencies',
-    component: AllCompetenciesComponent,
+    component: AllCompetenciesV2Component,
     data: {
       pageId: 'all-competencies',
       module: 'Competency',
