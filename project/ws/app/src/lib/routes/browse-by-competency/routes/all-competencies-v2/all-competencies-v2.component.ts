@@ -34,10 +34,9 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
   showFilterIndicator = 'all'
   filteredData: any[] = []
   filterApplied = false
-  competencyTheme: any =[]
-  competencyArea: any =[]
-  allcompetencyTheme: any = {}
-  originalCompetencyArray: any
+
+
+  
 
   TYPE_CONST = {
     behavioral: {
@@ -126,8 +125,19 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
     providers: [],
   }
   filterObjData2 = { ...this.filterObjData }
-  tabValue = ''
+  tabValue = 'all'
   certificateMappedObject: any = {}
+  // new
+
+
+  competencyTheme: any =[]
+  competencyArea: any =[]
+  competencyAreaObj: any = {}
+  allcompetencyTheme: any = {}
+  originalCompetencyArray: any
+  allcompetencyThemeData: any =[]
+  competencyCount: any = 0
+
 
   constructor(
     private widgetService: WidgetUserService,
@@ -155,144 +165,144 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getUserEnrollmentList()
+    // this.getUserEnrollmentList()
     this.getAllCompetencies()
   }
 
-  getUserEnrollmentList(): void {
-    const enrollmentMapData = JSON.parse(localStorage.getItem('enrollmentMapData') as any)
-    const userId: any = this.configService && this.configService.userProfile && this.configService.userProfile.userId
-    this.widgetService.fetchUserBatchList(userId)
-      .pipe(takeUntil(this.destroySubject$))
-      .subscribe(
-        (response: any) => {
-          let competenciesV5: any[] = []
+  // getUserEnrollmentList(): void {
+  //   const enrollmentMapData = JSON.parse(localStorage.getItem('enrollmentMapData') as any)
+  //   const userId: any = this.configService && this.configService.userProfile && this.configService.userProfile.userId
+  //   this.widgetService.fetchUserBatchList(userId)
+  //     .pipe(takeUntil(this.destroySubject$))
+  //     .subscribe(
+  //       (response: any) => {
+  //         let competenciesV5: any[] = []
 
-          response.courses.forEach((eachCourse: any) => {
-            // To eliminate In progress or Yet to start courses...
-            if (enrollmentMapData[eachCourse.contentId].status !== 2) { return }
+  //         response.courses.forEach((eachCourse: any) => {
+  //           // To eliminate In progress or Yet to start courses...
+  //           if (enrollmentMapData[eachCourse.contentId].status !== 2) { return }
 
-            if (eachCourse.content && eachCourse.content.competencies_v5) {
-              competenciesV5 = [...competenciesV5, ...eachCourse.content.competencies_v5]
-            }
+  //           if (eachCourse.content && eachCourse.content.competencies_v5) {
+  //             competenciesV5 = [...competenciesV5, ...eachCourse.content.competencies_v5]
+  //           }
 
-            const courseDetails = {
-              courseName: eachCourse.courseName.trim(),
-              viewMore: false,
-              batchId: eachCourse.batchId,
-              contentId: eachCourse.contentId,
-            }
-            if (eachCourse.issuedCertificates.length) {
-              // tslint: disable-next-line
-              eachCourse.issuedCertificates = eachCourse.issuedCertificates.map((icObj: any) => {
-                const nicObj = { ...icObj, ...courseDetails }
-                return nicObj
-              })
-            } else {
-              eachCourse.issuedCertificates.push(courseDetails)
-            }
+  //           const courseDetails = {
+  //             courseName: eachCourse.courseName.trim(),
+  //             viewMore: false,
+  //             batchId: eachCourse.batchId,
+  //             contentId: eachCourse.contentId,
+  //           }
+  //           if (eachCourse.issuedCertificates.length) {
+  //             // tslint: disable-next-line
+  //             eachCourse.issuedCertificates = eachCourse.issuedCertificates.map((icObj: any) => {
+  //               const nicObj = { ...icObj, ...courseDetails }
+  //               return nicObj
+  //             })
+  //           } else {
+  //             eachCourse.issuedCertificates.push(courseDetails)
+  //           }
 
-            if ((eachCourse.content.competencies_v5 && eachCourse.content.competencies_v5.length)) {
-              const subThemeMapping: any = {}
-              eachCourse.content.competencies_v5.forEach((v5Obj: any) => {
-                if (this.certificateMappedObject[v5Obj.competencyTheme]) {
+  //           if ((eachCourse.content.competencies_v5 && eachCourse.content.competencies_v5.length)) {
+  //             const subThemeMapping: any = {}
+  //             eachCourse.content.competencies_v5.forEach((v5Obj: any) => {
+  //               if (this.certificateMappedObject[v5Obj.competencyTheme]) {
 
-                  // Certificate consumed logic...
-                  eachCourse.issuedCertificates.forEach((certObj: any) => {
-                    // tslint:disable-next-line: max-line-length
-                    if (this.certificateMappedObject[v5Obj.competencyTheme].certificate.findIndex((_obj: any) => _obj.courseName === certObj.courseName) === -1) {
-                      this.certificateMappedObject[v5Obj.competencyTheme].certificate.push(certObj)
-                    }
-                  })
+  //                 // Certificate consumed logic...
+  //                 eachCourse.issuedCertificates.forEach((certObj: any) => {
+  //                   // tslint:disable-next-line: max-line-length
+  //                   if (this.certificateMappedObject[v5Obj.competencyTheme].certificate.findIndex((_obj: any) => _obj.courseName === certObj.courseName) === -1) {
+  //                     this.certificateMappedObject[v5Obj.competencyTheme].certificate.push(certObj)
+  //                   }
+  //                 })
 
-                  // Content consumed logic...
-                  if (this.certificateMappedObject[v5Obj.competencyTheme].contentConsumed.indexOf(eachCourse.courseName.trim()) === -1) {
-                    this.certificateMappedObject[v5Obj.competencyTheme].contentConsumed.push(eachCourse.courseName.trim())
+  //                 // Content consumed logic...
+  //                 if (this.certificateMappedObject[v5Obj.competencyTheme].contentConsumed.indexOf(eachCourse.courseName.trim()) === -1) {
+  //                   this.certificateMappedObject[v5Obj.competencyTheme].contentConsumed.push(eachCourse.courseName.trim())
 
-                    // Completed on logic...
-                    this.certificateMappedObject[v5Obj.competencyTheme].completedOn.push(eachCourse.completedOn)
-                  }
+  //                   // Completed on logic...
+  //                   this.certificateMappedObject[v5Obj.competencyTheme].completedOn.push(eachCourse.completedOn)
+  //                 }
 
-                } else {
-                  this.certificateMappedObject[v5Obj.competencyTheme] = {
-                    certificate: eachCourse.issuedCertificates,
-                    contentConsumed: [eachCourse.courseName],
-                    subThemes: [],
-                    completedOn: [eachCourse.completedOn],
-                  }
-                }
+  //               } else {
+  //                 this.certificateMappedObject[v5Obj.competencyTheme] = {
+  //                   certificate: eachCourse.issuedCertificates,
+  //                   contentConsumed: [eachCourse.courseName],
+  //                   subThemes: [],
+  //                   completedOn: [eachCourse.completedOn],
+  //                 }
+  //               }
 
-                // Sub theme mapping logic...
-                if (subThemeMapping[v5Obj.competencyTheme]) {
-                  if (subThemeMapping[v5Obj.competencyTheme].indexOf(v5Obj.competencySubTheme) === -1) {
-                    subThemeMapping[v5Obj.competencyTheme].push(v5Obj.competencySubTheme)
-                  }
-                } else {
-                  subThemeMapping[v5Obj.competencyTheme] = []
-                  subThemeMapping[v5Obj.competencyTheme].push(v5Obj.competencySubTheme)
-                }
-              })
-              for (const key in subThemeMapping) {
-                if (subThemeMapping.hasOwnProperty(key)) {
-                  this.certificateMappedObject[key].subThemes.push(subThemeMapping[key])
-                }
-              }
-            }
-          })
+  //               // Sub theme mapping logic...
+  //               if (subThemeMapping[v5Obj.competencyTheme]) {
+  //                 if (subThemeMapping[v5Obj.competencyTheme].indexOf(v5Obj.competencySubTheme) === -1) {
+  //                   subThemeMapping[v5Obj.competencyTheme].push(v5Obj.competencySubTheme)
+  //                 }
+  //               } else {
+  //                 subThemeMapping[v5Obj.competencyTheme] = []
+  //                 subThemeMapping[v5Obj.competencyTheme].push(v5Obj.competencySubTheme)
+  //               }
+  //             })
+  //             for (const key in subThemeMapping) {
+  //               if (subThemeMapping.hasOwnProperty(key)) {
+  //                 this.certificateMappedObject[key].subThemes.push(subThemeMapping[key])
+  //               }
+  //             }
+  //           }
+  //         })
 
-          competenciesV5.forEach((v5Obj: any) => {
-            v5Obj.subTheme = []
-            v5Obj.contentConsumed = []
-            v5Obj.issuedCertificates = []
-            // tslint:disable-next-line: max-line-length
-            const competencyArea = (v5Obj.competencyArea.toLowerCase() === 'behavioral') ? 'behavioural' : v5Obj.competencyArea.toLowerCase()
-            if (this.competency[competencyArea].findIndex((obj: any) => obj.competencyTheme === v5Obj.competencyTheme) === -1) {
-              this.competency[competencyArea].push(v5Obj)
-            }
+  //         competenciesV5.forEach((v5Obj: any) => {
+  //           v5Obj.subTheme = []
+  //           v5Obj.contentConsumed = []
+  //           v5Obj.issuedCertificates = []
+  //           // tslint:disable-next-line: max-line-length
+  //           const competencyArea = (v5Obj.competencyArea.toLowerCase() === 'behavioral') ? 'behavioural' : v5Obj.competencyArea.toLowerCase()
+  //           if (this.competency[competencyArea].findIndex((obj: any) => obj.competencyTheme === v5Obj.competencyTheme) === -1) {
+  //             this.competency[competencyArea].push(v5Obj)
+  //           }
 
-            this.competency[competencyArea].forEach((_obj: any) => {
-              if (_obj.competencyTheme === v5Obj.competencyTheme) {
-                if (_obj.subTheme.indexOf(v5Obj.competencySubTheme) === -1) {
-                  _obj.subTheme.push(v5Obj.competencySubTheme)
-                  // tslint: disable-next-line: whitespace
-                }
-                // tslint: disable-next-line: whitespace
-              }
-            })
-          })
-          // tslint: disable-next-line
-          this.competency.all = [...this.competency.behavioural, ...this.competency.functional, ...this.competency.domain]
-          this.getOtherData()
-          this.competency.all = this.competency.all.sort((a: any, b: any) => b.latest - a.latest)
+  //           this.competency[competencyArea].forEach((_obj: any) => {
+  //             if (_obj.competencyTheme === v5Obj.competencyTheme) {
+  //               if (_obj.subTheme.indexOf(v5Obj.competencySubTheme) === -1) {
+  //                 _obj.subTheme.push(v5Obj.competencySubTheme)
+  //                 // tslint: disable-next-line: whitespace
+  //               }
+  //               // tslint: disable-next-line: whitespace
+  //             }
+  //           })
+  //         })
+  //         // tslint: disable-next-line
+  //         this.competency.all = [...this.competency.behavioural, ...this.competency.functional, ...this.competency.domain]
+  //         this.getOtherData()
+  //         this.competency.all = this.competency.all.sort((a: any, b: any) => b.latest - a.latest)
 
-          this.competencyArray = (this.isMobile) ? this.competency.all.slice(0, 3) : this.competency.all
-          this.competency.skeletonLoading = true
-        },
-        (error: HttpErrorResponse) => {
-          if (!error.ok) {
-            this.matSnackBar.open('Unable to pull Enrollment list details!')
-            this.competency.skeletonLoading = false
-          }
-        }
-    )
-  }
+  //         this.competencyArray = (this.isMobile) ? this.competency.all.slice(0, 3) : this.competency.all
+  //         this.competency.skeletonLoading = false
+  //       },
+  //       (error: HttpErrorResponse) => {
+  //         if (!error.ok) {
+  //           this.matSnackBar.open('Unable to pull Enrollment list details!')
+  //           this.competency.skeletonLoading = false
+  //         }
+  //       }
+  //   )
+  // }
 
-  getOtherData(): void {
-    this.competency.all.forEach((allObj: any) => {
-      allObj.issuedCertificates = this.certificateMappedObject[allObj.competencyTheme].certificate
-      allObj.contentConsumed = this.certificateMappedObject[allObj.competencyTheme].contentConsumed
-      allObj.courseSubThemes = this.certificateMappedObject[allObj.competencyTheme].subThemes
-      // tslint:disable-next-line: max-line-length
-      allObj['latest'] = (this.certificateMappedObject[allObj.competencyTheme].completedOn.length) ? Math.max(...this.certificateMappedObject[allObj.competencyTheme].completedOn) : null
+  // getOtherData(): void {
+  //   this.competency.all.forEach((allObj: any) => {
+  //     allObj.issuedCertificates = this.certificateMappedObject[allObj.competencyTheme].certificate
+  //     allObj.contentConsumed = this.certificateMappedObject[allObj.competencyTheme].contentConsumed
+  //     allObj.courseSubThemes = this.certificateMappedObject[allObj.competencyTheme].subThemes
+  //     // tslint:disable-next-line: max-line-length
+  //     allObj['latest'] = (this.certificateMappedObject[allObj.competencyTheme].completedOn.length) ? Math.max(...this.certificateMappedObject[allObj.competencyTheme].completedOn) : null
 
-      this.leftCardDetails.forEach((_lObj: any) => {
-        if (_lObj.type === allObj.competencyArea) {
-          _lObj.competencySubTheme += allObj.subTheme.length
-          _lObj.contentConsumed += allObj.contentConsumed.length
-        }
-      })
-    })
-  }
+  //     this.leftCardDetails.forEach((_lObj: any) => {
+  //       if (_lObj.type === allObj.competencyArea) {
+  //         _lObj.competencySubTheme += allObj.subTheme.length
+  //         _lObj.contentConsumed += allObj.contentConsumed.length
+  //       }
+  //     })
+  //   })
+  // }
 
   handleLeftFilter(months: string): void {
     // Do not delete, need to work on this...
@@ -310,8 +320,10 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
   handleTabChange(event: MatTabChangeEvent): void {
     const param = event.tab.textLabel.toLowerCase()
     this.tabValue = param
-    this.competencyArray = this.competency[param].sort((a: any, b: any) => b.latest - a.latest)
-    this.filterObjData2 = { ...this.filterObjData }
+    this.competency.skeletonLoading = true
+    // this.competencyArray = this.competency[param].sort((a: any, b: any) => b.latest - a.latest)
+    // this.filterObjData2 = { ...this.filterObjData }
+    this.getcompetencyTheme(param, {})
   }
 
   handleShowAll(): void {
@@ -425,15 +437,21 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
       if (response && response.result && response.result.competency) {
         this.originalCompetencyArray = response.result.competency
         this.getCompetencyArea()
+        this.allcompetencyTheme['all'] = {}
         response.result.competency.forEach((element: any) => {
+          this.allcompetencyTheme[element.name.toLowerCase()] = {}
           element.children.forEach((childEle: any) => {
-            const name = childEle.name.toLowerCase()
-            this.allcompetencyTheme[name] = childEle
-            this.allcompetencyTheme[name]['viewMore'] = false
+            this.allcompetencyTheme['all'][childEle.id] = childEle
+            this.allcompetencyTheme['all'][childEle.id]['viewMore'] = false
+            this.allcompetencyTheme['all'][childEle.id]['parent'] = element.name
+            this.allcompetencyTheme[element.name.toLowerCase()][childEle.id] = childEle
+            this.allcompetencyTheme[element.name.toLowerCase()][childEle.id]['viewMore'] = false
+            this.allcompetencyTheme[element.name.toLowerCase()][childEle.id]['parent'] = element.name
           })
         })
         console.log(this.allcompetencyTheme,'this.allcompetencyTheme')
         console.log(this.originalCompetencyArray,'this.originalCompetencyArray')
+        this.competency.skeletonLoading = false
       }
       // this.loadCometency = false
     })
@@ -455,6 +473,7 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
             },
             'facets': [
                 'competencies_v5.competencyArea',
+                "competencies_v5.competencyThemeId"
             ],
             'limit': 0,
             'offset': 0,
@@ -469,6 +488,30 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
         if (response.results.result.facets) {
           console.log(response.results.result.facets[0].values, 'response.results.result.facets[0].values')
           this.competencyArea = response.results.result.facets[0].values
+          
+          this.competencyAreaObj =  {}
+          
+          response.results.result.facets.forEach((facet: any) => {
+            if(facet.name === 'competencies_v5.competencyArea') {
+              this.competencyCount = 0
+              facet.values.forEach((compArea: any) => {
+                this.competencyCount = this.competencyCount + compArea.count
+                this.competencyAreaObj = {
+                  ...this.competencyAreaObj,
+                  [compArea['name']]:compArea
+                }
+              });
+            } else if(facet.name === 'competencies_v5.competencyThemeId') {
+              this.allcompetencyThemeData = facet.values
+              this.competencyArray = facet.values
+            }
+          });
+          response.results.result.facets[0].values.forEach((compArea: any) => {
+            this.competencyAreaObj = {
+              ...this.competencyAreaObj,
+              [compArea['name']]:compArea
+            }
+          });
           // this.competencyStrength = this.competencyArea.reduce((partialSum: any, data: any) => partialSum +  data.count, 0)
           // this.selectedValue  = this.competencyArea[0].name.toLowerCase()
           
@@ -496,6 +539,7 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
   }
 
   async getcompetencyTheme(value: any,addFilter?: any) {
+    this.competency.skeletonLoading = true
     let request = {
       "request": {
           "query": "",
@@ -511,7 +555,7 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
               "lastUpdatedOn": "desc"
           },
           "facets": [
-              "competencies_v5.competencyTheme"
+              "competencies_v5.competencyThemeId"
           ],
           "limit": 0,
           "offset": 0,
@@ -529,13 +573,14 @@ export class AllCompetenciesV2Component implements OnInit, OnDestroy {
         this.originalCompetencyArray.forEach((element: any) => {
           if(element.name.toLowerCase() === value) {
             this.competencyTheme = competencyThemeData.filter((ele1: any) => {
-              return  element.children.find((ele2: any) => ele2.name.toLowerCase() === ele1.name.toLowerCase())
+              return  element.children.find((ele2: any) => ele2.id === Number(ele1.name))
             })
-            console.log(this.competencyTheme,'this.competencyTheme')
+            this.competencyArray = this.competencyTheme
             // this.showAllTheme = [{name:'Show all', showAll: false}]
             // this.competencyThemeLength = 6
           }
         });
+        this.competency.skeletonLoading = false
         // this.resetViewMore()
       }
       // this.loadCometency = false
