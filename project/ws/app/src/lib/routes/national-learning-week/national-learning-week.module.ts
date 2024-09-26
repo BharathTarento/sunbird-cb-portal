@@ -39,7 +39,7 @@ import {
   CommonStripModule,
   ContentStripWithTabsLibModule,
   NationalLearningModule,
-  SlidersLibModule} from '@sunbird-cb/consumption'
+  SlidersLibModule, ContentStripFacetFilterModule} from '@sunbird-cb/consumption'
 import { BtnPageBackModule } from '@sunbird-cb/collection/src/public-api'
 import { MdoChannelFormService } from '../mdo-channels/service/mdo-channel-form.service'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -86,6 +86,7 @@ import { NationalLearningWeekMicrositeComponent } from './national-learning-week
     SlidersLibModule,
     CommonStripModule,
     MatMenuModule,
+    ContentStripFacetFilterModule,
     NationalLearningModule,
     TranslateModule.forRoot({
       loader: {
