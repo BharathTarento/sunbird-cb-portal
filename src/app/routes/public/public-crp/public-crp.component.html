@@ -1,3 +1,21 @@
+<div [ngClass]="mobileTopHeaderVisibilityStatus ? 'mobile-download-app-top-header' : 'mobile-download-app-without-top-header'" *ngIf="mobileTopHeaderVisibilityStatus">
+    <!-- //NOSONAR --><div class="cross-mobile-download-app" (click)="hideMobileTopHeader()">
+        <span>X</span>
+    </div>
+    <div class="kb-symbol">
+        <img src="/assets/icons/top-nav/KB-Symbol_icon.svg" alt="">
+    </div>
+    <div class="mobile-download-app-desc">
+        <p class="mobile-download-app-desc-heading">iGot Karmayogi</p>
+        <p class="mobile-download-app-desc-sub-heading">Download the mobile app</p>
+    </div>
+    <div class="flex-1 flex justify-end pr-4">
+        <!-- //NOSONAR --><li class="download-app-chip-top-header" (click)="downloadApp()">
+            <span>Download App </span>
+        </li>
+    </div>
+</div>
+
 <div class="main_container flex flex-row" style="
     background: url(/assets/instances/eagle/banners/home/9/BG.png) center center
       fixed;
@@ -50,7 +68,7 @@
                     <!-- <div class="flex flex-wrap mobile-break"> -->
                     <div class="w-full">
                         <!-- <div class="flex flex-col content-center flex-wrap"> -->
-                        <div class="flex gap-6">
+                        <div class="flex gap-6 flex-wrap">
                             <div class="input-wrapper margin-top-s">
                                 <label for="firstName" class="margin-remove-bottom form-label required"
                                     i18n="First name label|Label which explains the user to enter first name"
@@ -61,7 +79,7 @@
                                     <input id="firstName" matInput #firstname formControlName="firstname"
                                         i18n-placeholder placeholder="{{'publicsignup.enterYourFullName' | translate}}"
                                         autocomplete="off" i18n-aria-label aria-label="First Name input"
-                                        maxlength="150" />
+                                        maxlength="100" />
                                     <mat-error [hidden]="false" i18n="First Name Error|Explains name is required"
                                         i18n-aria-label aria-label="First Name Error|Explains name is required "
                                         *ngIf=" registrationForm?.controls['firstname'].errors?.required">
@@ -99,7 +117,7 @@
 
                         </div>
 
-                        <div class="flex gap-6">
+                        <div class="flex gap-6 flex-wrap">
                             <div class="input-wrapper mobile-wrapper margin-top-l">
                                 <label for="email" class="margin-remove-bottom form-label required"
                                     i18n="Email label|Label which explains the user to enter Email" i18n-aria-label

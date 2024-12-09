@@ -28,6 +28,7 @@ import { DialogBoxComponent as ZohoDialogComponent } from '@ws/app/src/lib/route
 // tslint:disable-next-line: import-name
 import _ from 'lodash';
 import { IOrganizationDetails } from './models/public-crp-model';
+import { MobileAppsService } from '../../../services/mobile-apps.service';
 
 @Component({
   selector: 'ws-public-crp',
@@ -36,7 +37,7 @@ import { IOrganizationDetails } from './models/public-crp-model';
 })
 export class PublicCrpComponent {
   registrationForm!: UntypedFormGroup;
-  namePatern = `[a-zA-Z\\s\\']{1,32}$`;
+  namePatern = /^[a-zA-Z0-9\s']+$/;
   customCharsPattern = `^[a-zA-Z0-9 \\w\-\&\(\)]*$`;
   positionsOriginal!: [];
   postions!: any;
@@ -89,6 +90,9 @@ export class PublicCrpComponent {
   organisationsList: any[] = [];
   designationsList: any[] = [];
   stopExecution = 0;
+
+  mobileTopHeaderVisibilityStatus = true
+
   constructor(
     private signupSvc: SignupService,
     private loggerSvc: LoggerService,
@@ -103,7 +107,8 @@ export class PublicCrpComponent {
     private translate: TranslateService,
     private langtranslations: MultilingualTranslationsService,
     private http: HttpClient,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public mobileAppsService: MobileAppsService
   ) {
     if (localStorage.getItem('websiteLanguage')) {
       this.translate.setDefaultLang('en');
@@ -487,6 +492,7 @@ export class PublicCrpComponent {
               mapId: this.heirarchyObject.mapId || '',
               sbRootOrgId: this.heirarchyObject.sbRootOrgId,
               sbOrgId: this.heirarchyObject.sbOrgId,
+              registrationLink: window.location.href
             };
           }
 
@@ -662,7 +668,7 @@ export class PublicCrpComponent {
     };
     this.signupSvc.searchOrgsByIdentifier(params).subscribe({
       next: (response: any) => {
-        if (response.result) {
+        if (response.result && response.result.response) {
           const organization = response.result.response.find(
             (org: any) => org.orgName === this.organizationDetails!.orgName
           );
@@ -673,4 +679,28 @@ export class PublicCrpComponent {
       },
     });
   }
+
+  hideMobileTopHeader() {
+    this.mobileTopHeaderVisibilityStatus = false
+    this.mobileAppsService.mobileTopHeaderVisibilityStatus.next(this.mobileTopHeaderVisibilityStatus)
+  }
+
+  
+  downloadApp(): void {
+    const userAgent = navigator.userAgent
+    // Windows Phone must come first because its UA also contains "Android"
+    if (/windows phone/i.test(userAgent)) {
+      window.open('https://play.google.com/store/apps/details?id=com.igot.karmayogibharat&hl=en&gl=US', '_blank')
+    }
+
+    if (/android/i.test(userAgent)) {
+        window.open('https://play.google.com/store/apps/details?id=com.igot.karmayogibharat&hl=en&gl=US', '_blank')
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent)) {
+        window.open('https://apps.apple.com/in/app/igot-karmayogi/id6443949491', '_blank')
+    }
+  }
+
 }
