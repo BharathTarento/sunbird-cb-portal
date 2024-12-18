@@ -1,4 +1,10 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  Inject,
+  PLATFORM_ID,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import {
   UntypedFormControl,
   UntypedFormGroup,
@@ -6,9 +12,12 @@ import {
 } from '@angular/forms';
 import {
   ConfigurationsService,
+  EventService,
   LoggerService,
   MultilingualTranslationsService,
   NsInstanceConfig,
+  TelemetryService,
+  WsEvents,
 } from '@sunbird-cb/utils-v2';
 import { interval, Observable, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -29,6 +38,7 @@ import { DialogBoxComponent as ZohoDialogComponent } from '@ws/app/src/lib/route
 import _ from 'lodash';
 import { IOrganizationDetails } from './models/public-crp-model';
 import { MobileAppsService } from '../../../services/mobile-apps.service';
+import { AppOtpReaderComponent } from 'src/app/component/app-otp-reader/app-otp-reader.component';
 
 @Component({
   selector: 'ws-public-crp',
@@ -74,7 +84,7 @@ export class PublicCrpComponent {
   emailPattern = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`;
   zohoHtml: any;
   zohoUrl: any = '/assets/static-data/zoho-code.html';
-
+  invalidLinkMessage = '';
   private subscriptionContact: Subscription | null = null;
   private recaptchaSubscription!: Subscription;
   private userdataSubscription!: Subscription;
@@ -89,9 +99,14 @@ export class PublicCrpComponent {
   frameworkDetails: any;
   organisationsList: any[] = [];
   designationsList: any[] = [];
+  filteredDesignationsList: any[] = [];
+  filteredGroupsList: any[] = [];
   stopExecution = 0;
 
-  mobileTopHeaderVisibilityStatus = true
+  mobileTopHeaderVisibilityStatus = true;
+  @ViewChild('invalidLinkTemplate') invalidLinkTemplateRef!: TemplateRef<any>;
+  @ViewChild('emailOTPComponent') emailOTPComponent!: AppOtpReaderComponent;
+  @ViewChild('phoneOTPComponent') phoneOTPComponent!: AppOtpReaderComponent;
 
   constructor(
     private signupSvc: SignupService,
@@ -108,7 +123,9 @@ export class PublicCrpComponent {
     private langtranslations: MultilingualTranslationsService,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
-    public mobileAppsService: MobileAppsService
+    public mobileAppsService: MobileAppsService,
+    private eventService: EventService,
+    private telemetrySvc: TelemetryService
   ) {
     if (localStorage.getItem('websiteLanguage')) {
       this.translate.setDefaultLang('en');
@@ -153,6 +170,8 @@ export class PublicCrpComponent {
       this.isMultiLangEnabled =
         this.configSvc.instanceConfig.isMultilingualEnabled;
     }
+
+    this.raiseImpressionTelemetry()
   }
 
   ngOnInit() {
@@ -164,20 +183,44 @@ export class PublicCrpComponent {
         (ele: any) => ele !== 'Others'
       );
       this.masterGroup = this.groupsOriginal;
+      this.filteredGroupsList = [...this.groupsOriginal];
     } else {
       this.groupsOriginal = [];
     }
-
     const org = this.activatedRoute.snapshot.data.organization;
     if (org) {
       this.designationsList = org.designationsList;
       this.organizationDetails = org.organizationDetails;
-    } else {
-      this.openSnackbar(
-        'Oops! It seems the registration link is invalid or the organization could not be found'
-      );
-      // this.router.navigate(['/public/signup'])
+      this.invalidLinkMessage = org.invalidLinkMessage;
+      this.filteredDesignationsList = [...this.designationsList]
+
+      if (
+        this.invalidLinkMessage &&
+        this.invalidLinkMessage !== 'Registration link is not active'
+      ) {
+        setTimeout(() => {
+          this.dialog.open(this.invalidLinkTemplateRef, {
+            width: '400px',
+            height: '200px',
+            data: this.invalidLinkMessage,
+            disableClose: true,
+          });
+        }, 200);
+      } else if (
+        this.invalidLinkMessage &&
+        this.invalidLinkMessage == 'Registration link is not active'
+      ) {
+        setTimeout(() => {
+          this.dialog.open(this.invalidLinkTemplateRef, {
+            width: '400px',
+            height: '200px',
+            data: 'Registrations are closed as of now please reach out to your department MDO or please write us at mission.karmayogi@gov.in with organization and designation name',
+            disableClose: true,
+          });
+        }, 200)
+      }
     }
+
     this.getOrganization();
     this.onPhoneChange();
     this.onEmailChange();
@@ -303,13 +346,13 @@ export class PublicCrpComponent {
   verifyOtp(otp: any) {
     const mob = this.registrationForm.get('mobile');
 
-    if (otp && otp.value) {
-      if (otp && otp.value.length < 4) {
+    if (otp) {
+      if (otp && otp.length < 4) {
         this.snackBar.open(
           this.translateLabels('pleaseEnterValidOtp', 'publicsignup')
         );
       } else if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
-        this.signupSvc.verifyOTP(otp.value, mob.value, 'phone').subscribe(
+        this.signupSvc.verifyOTP(otp, mob.value, 'phone').subscribe(
           (res: any) => {
             if (_.get(res, 'result.response').toUpperCase() === 'SUCCESS') {
               this.otpVerified = true;
@@ -405,13 +448,13 @@ export class PublicCrpComponent {
 
   verifyOtpEmail(otp: any) {
     const email = this.registrationForm.get('email');
-    if (otp && otp.value) {
-      if (otp && otp.value.length < 4) {
+    if (otp ) {
+      if (otp && otp.length < 4) {
         this.snackBar.open(
           this.translateLabels('pleaseEnterValidOtp', 'publicsignup')
         );
       } else if (email && email.value && email.valid) {
-        this.signupSvc.verifyOTP(otp.value, email.value, 'email').subscribe(
+        this.signupSvc.verifyOTP(otp, email.value, 'email').subscribe(
           (res: any) => {
             if (_.get(res, 'result.response').toUpperCase() === 'SUCCESS') {
               this.otpEmailSend = true;
@@ -469,6 +512,7 @@ export class PublicCrpComponent {
   }
 
   signup() {
+    this.raiseSignupInteractTelementry()
     this.disableBtn = true;
     // this.recaptchaSubscription = this.recaptchaV3Service
     //   .execute('importantAction')
@@ -492,7 +536,8 @@ export class PublicCrpComponent {
               mapId: this.heirarchyObject.mapId || '',
               sbRootOrgId: this.heirarchyObject.sbRootOrgId,
               sbOrgId: this.heirarchyObject.sbOrgId,
-              registrationLink: window.location.href
+              registrationLink: window.location.href,
+              position: this.registrationForm.value.designation || '',
             };
           }
 
@@ -501,6 +546,7 @@ export class PublicCrpComponent {
               this.openDialog();
               this.disableBtn = false;
               this.isMobileVerified = true;
+              
             },
             (err: any) => {
               this.disableBtn = false;
@@ -703,4 +749,48 @@ export class PublicCrpComponent {
     }
   }
 
+  raiseSignupInteractTelementry() {
+      this.eventService.raiseInteractTelemetry(
+        {
+          type: WsEvents.EnumInteractTypes.CLICK,
+          id: 'sign-up',
+          pageid: "/crp" 
+        },
+        {},
+      )
+  }
+
+  raiseImpressionTelemetry() {
+    this.telemetrySvc.impression(
+      { 
+        type: "view",
+        pageid: "/crp",
+        uri: this.router.url,
+      },{
+        module: "Self Registration",
+      }
+    )
+  }
+
+  onFilterDesignation(value: string): void {
+    const filterValue = value.toLowerCase()
+    this.filteredDesignationsList = this.designationsList.filter((option: any) =>
+      option.name.toLowerCase().includes(filterValue)
+    )
+  }
+
+  displayFn(option: any): string {
+    return option ? option : ''
+  }
+
+  onFilterGroups(value: string): void {
+    const filterValue = value.toLowerCase()
+    this.filteredGroupsList = this.masterGroup.filter((option: any) =>
+      option.toLowerCase().includes(filterValue)
+    )
+  }
+
+  displayFnGroups(option: any): string {
+    return option ? option : ''
+  }
 }

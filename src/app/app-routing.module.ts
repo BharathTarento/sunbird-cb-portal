@@ -195,8 +195,8 @@ const routes: Routes = [
     canActivate: [GeneralGuard],
     data: {
       pageType: 'feature',
-      pageKey: 'knowledge-resource',
-      pageId: 'app/knowledge-resource',
+      pageKey: 'amrit-gyaan-kosh',
+      pageId: 'app/amrit-gyaan-kosh',
     },
     resolve: {
       pageData: FormDataResolverService,
@@ -726,7 +726,7 @@ const routes: Routes = [
     path: 'crp/:qrCodeId/:orgId',
     component: PublicCrpComponent,
     data: {
-      module: 'Login',
+      module: 'Self Registration',
       pageId: 'crp',
     },
     resolve: {
@@ -904,7 +904,7 @@ const routes: Routes = [
     component: LearnerAdvisoryComponent,
     canActivate: [GeneralGuard],
     resolve: {
-      resolve: { home: HomeResolverService },
+     home: HomeResolverService,
     },
     // data: {
     //   module: 'learner-advisory',
