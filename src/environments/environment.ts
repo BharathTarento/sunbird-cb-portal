@@ -26,6 +26,7 @@ export const environment: IEnvironment = {
   contentBucket: (window as { [key: string]: any })['env']['azureBucket'] || '',
   cdnContentHost: (window as { [key: string]: any })['env']['cdnContentHost'] || '',
   cdnContentBucket: (window as { [key: string]: any })['env']['cdnContentBucket'] || '',
+  dicussV2Bucket: (window as { [key: string]: any })['env']['dicussV2Bucket'] || '',
   certificateassets: (window as { [key: string]: any })['env']['certificateassets'] || '',
   assessmentBuffer: (window as { [key: string]: any })['env']['assessmentBuffer'] || 0,
   staticHomePageUrl: (window as { [key: string]: any })['env']['staticHomePageUrl'] || '',
@@ -42,6 +43,7 @@ export const environment: IEnvironment = {
   helpEmail: (window as { [key: string]: any })['env']['helpEmail'] || '',
   supportEmail: (window as { [key: string]: any })['env']['supportEmail'] || '',
   spvorgID: (window as { [key: string]: any })['env']['spvorgID'] || '',
+  doptOrg: (window as { [key: string]: any })['env']['doptOrg'] || '',
   mdoChannelsBookmarkId: (window as { [key: string]: any })['env']['mdoChannelsBookmarkId'] || '',
   providerDataKey: (window as { [key: string]: any })['env']['providerDataKey'] || '',
   compentencyVersionKey: (window as { [key: string]: any })['env']['compentencyVersionKey'] || '',
@@ -80,12 +82,14 @@ interface IEnvironment {
   helpEmail: string,
   cdnContentHost: string,
   cdnContentBucket: string,
+  dicussV2Bucket?: string,
   supportEmail: string,
   apiCache: number,
   spvorgID: number,
-  mdoChannelsBookmarkId: string
+  doptOrg?: string,
+  mdoChannelsBookmarkId: string,
   providerDataKey: string,
-  compentencyVersionKey: string
+  compentencyVersionKey: string,
   cbcOrg: string
 }
 
