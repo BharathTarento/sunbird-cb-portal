@@ -1992,6 +1992,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
     let identifier = this.content && this.content.identifier || ''
     let request: any = {
       "request": {
+        "retiredCoursesEnabled": true,
           "courseId": [identifier]
       }
     }
