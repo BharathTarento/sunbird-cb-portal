@@ -89,13 +89,13 @@ export class RecommendeLearningsComponent implements OnInit {
       this.seeAllSvc.fetchSearchData(sRequest).subscribe((res: any) => {
         if (res && res.result && res.result.content) {
           let courses = res.result.content
-          this.getPilldata(courses, enollData)
+          this.getPilldata(courses, enollData, response)
         }
       })
     }
   }
 
-  getPilldata(courses: any, enollData: any){
+  getPilldata(courses: any, enollData: any, coursesArray: any){
     let avaialable: any[] = []
     let inprogress: any[] = []
     let completed: any[] = []
@@ -103,26 +103,29 @@ export class RecommendeLearningsComponent implements OnInit {
     this.widgetSvc.getData('cbpData').subscribe((result => {
       cbpData = result
     }))
-    courses.forEach((course: any) => {
-      if (cbpData) {
-        const cbpelem = cbpData.find((_course: any) => _course.identifier === course.identifier)
-        if (cbpelem) {
-          return
+    coursesArray.forEach((courseId: any) => {
+      let course = courses.find((item: any) => item.identifier === courseId)
+      if (course) {
+        if (cbpData) {
+          const cbpelem = cbpData.find((_course: any) => _course.identifier === course.identifier)
+          if (cbpelem) {
+            return
+          }
         }
-      }
-      if (enollData && enollData.length) {
-        const elem = enollData.find((eCourse: any) => eCourse.contentId === course.identifier)
-        if (elem) {
-          if (elem.status === 2) {
-            completed.push(course)
+        if (enollData && enollData.length) {
+          const elem = enollData.find((eCourse: any) => eCourse.contentId === course.identifier)
+          if (elem) {
+            if (elem.status === 2) {
+              completed.push(course)
+            } else {
+              inprogress.push(course)
+            }
           } else {
-            inprogress.push(course)
+            avaialable.push(course)
           }
         } else {
           avaialable.push(course)
         }
-      } else {
-        avaialable.push(course)
       }
     })
     this.results.push({name: 'ravailable', courses: this.transformContentsToWidgets(
