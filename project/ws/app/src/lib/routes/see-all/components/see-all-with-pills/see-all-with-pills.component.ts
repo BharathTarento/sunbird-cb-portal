@@ -493,6 +493,7 @@ export class SeeAllWithPillsComponent  implements OnInit, OnDestroy {
     }
 
     pillClicked(stripMap: any,  pillIndex: any, tabIndex: any) {
+      this.pageSize = 50
       if (stripMap && stripMap.tabs && stripMap.tabs[tabIndex]) {
         stripMap.tabs[tabIndex].pillsData[pillIndex].fetchTabStatus = 'inprogress'
         stripMap.tabs[tabIndex].pillsData[pillIndex].tabLoading = true
@@ -532,6 +533,8 @@ export class SeeAllWithPillsComponent  implements OnInit, OnDestroy {
       }
     }
     public tabClicked(tabIndex: any, stripMap: any, _stripKey: string, pillIndex: any) {
+
+      this.pageSize = 50
       if (stripMap && stripMap.tabs && stripMap.tabs[tabIndex]) {
         stripMap.tabs[tabIndex].pillsData[pillIndex].fetchTabStatus = 'inprogress'
         stripMap.tabs[tabIndex].pillsData[pillIndex].tabLoading = true
