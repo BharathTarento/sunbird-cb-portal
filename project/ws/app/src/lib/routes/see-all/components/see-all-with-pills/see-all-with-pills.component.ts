@@ -631,8 +631,9 @@ export class SeeAllWithPillsComponent  implements OnInit, OnDestroy {
         && currentPillFromMap.request.payload.request.limit){
         delete currentPillFromMap.request.payload.request.limit
       }
+      let courses: any = []
       this.enrollSvc.fetchInternalEnrollmentData(userId, currentPillFromMap.request.payload).subscribe((res: any) => {
-        let courses: any = []
+        
         if(res && res.result && res.result.courses && res.result.courses.length){
           courses  = [...courses, ...res.result.courses]
         }
@@ -643,10 +644,16 @@ export class SeeAllWithPillsComponent  implements OnInit, OnDestroy {
           }
           this.formatNewEnrollmentData(strip, tabIndex, pillIndex, courses, calculateParentStatus)
         },(_err: any) => {
-
+          if(courses && courses.length){
+            courses  = [...courses]
+            this.formatNewEnrollmentData(strip, tabIndex, pillIndex, courses, calculateParentStatus)
+          }
         })
       },(_err: any) => {
-
+        if(courses && courses.length){
+          courses  = [...courses]
+          this.formatNewEnrollmentData(strip, tabIndex, pillIndex, courses, calculateParentStatus)
+        }
       })
     }
   }
