@@ -402,7 +402,6 @@ export class AppTocBannerComponent implements OnInit, OnChanges, OnDestroy {
       `Indian Postal Service`,
       `Indian Railway Accounts Service`,
       `Indian Railway Personnel Service`,
-      `Indian Railway Service`,
       `Indian Railway Service of Electrical Engineers`,
       `Indian Railway Service of Engineers`,
       `Indian Railway Service of Mechanical Engineers`,
@@ -416,7 +415,13 @@ export class AppTocBannerComponent implements OnInit, OnChanges, OnDestroy {
       `Indian Telecom Service`,
       `Indian Trade Service`,
       `IP&T (Fin. & Accounts) Service`,
-      `Delhi, Andaman and Nicobar Islands, Lakshadweep, Daman & Diu, and Dadra & Nagar Haveli Civil Service (DANICS)`
+      `Central Company Law Service`,
+      `Central Engineering Service (Roads)`,
+      `Indian Broadcasting (Engineering) Service`,
+      `Indian Defence Service of Engineers`,
+      `Indian Ordnance Factory Service`,
+      `Central Secretariat Stenographers Service`,
+      `Indian P&T Finance & Accounts Service`
   ]
   }
 
@@ -562,9 +567,9 @@ export class AppTocBannerComponent implements OnInit, OnChanges, OnDestroy {
     if (this.content) {
       const doptorgID = environment.doptOrg
       const isDoptContent = _.get(this.content, 'createdFor', []).includes(doptorgID)
-      const isDptUser = _.get(this.userProfileObject, 'rootOrgId') === doptorgID
+      // const isDptUser = _.get(this.userProfileObject, 'rootOrgId') === doptorgID
       const civilServiceName = _.get(this.userProfileObject, 'profileDetails.cadreDetails.civilServiceName', '')
-      if( isDoptContent && isDptUser) {
+      if( isDoptContent) {
         if(!civilServiceName) {
           this.openConformationDialog(`This program has eligibility criteria. Please update your service details in your profile before requesting to enroll.`)
           return
@@ -574,14 +579,14 @@ export class AppTocBannerComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
       const courseName = this.content.name
-      const showDoptChanges = (isDoptContent && isDptUser) ? true : false
+      // const showDoptChanges = (isDoptContent && isDptUser) ? true : false
       const profileForm = this.dialog.open(EnrollProfileFormComponent, {
         width: '920px',
         maxHeight: '85vh',
         data: {
           courseName,
           batchData,
-          showDoptChanges,
+          showDoptChanges: isDoptContent,
         },
         disableClose: false,
         panelClass: ['animate__animated', 'animate__slideInLeft'],
