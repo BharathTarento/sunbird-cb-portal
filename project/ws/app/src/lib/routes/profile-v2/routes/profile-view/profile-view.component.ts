@@ -13,7 +13,7 @@ import _ from 'lodash'
 import { Subject } from 'rxjs'
 import { debounceTime, distinctUntilChanged, startWith, takeUntil } from 'rxjs/operators'
 
-import { ImageCropComponent, ConfigurationsService } from '@sunbird-cb/utils-v2'
+import { ImageCropComponent, ConfigurationsService, EventService, WsEvents } from '@sunbird-cb/utils-v2'
 import { LoaderService } from '@ws/author/src/public-api'
 import { PipeCertificateImageURL } from '@sunbird-cb/utils-v2'
 import { IMAGE_MAX_SIZE, PROFILE_IMAGE_SUPPORT_TYPES } from '@ws/author/src/lib/constants/upload'
@@ -34,6 +34,7 @@ import { RejectionReasonPopupComponent } from '../../components/rejection-reason
 import { ConfirmDialogComponent } from '@sunbird-cb/collection/src/lib/_common/confirm-dialog/confirm-dialog.component'
 import { ProfileV2Service } from '../../services/profile-v2.servive'
 import { environment } from 'src/environments/environment'
+import { SignupService } from 'src/app/routes/public/public-signup/signup.service'
 
 export const MY_FORMATS = {
   parse: {
@@ -168,8 +169,8 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
   groupApprovedTime = 0
   designationApprovedTime = 0
   currentDate = new Date()
-  designationsMeta: any
-  filterDesignationsMeta: any
+  designationsMeta: any = []
+  filterDesignationsMeta: any = []
   civilServiceTypes: any
   civilServiceData: any
   cadreControllingAuthority: any
@@ -216,7 +217,9 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private loader: LoaderService,
     private pipeImgUrl: PipeCertificateImageURL,
     private homeService: HomePageService,
-    private profileService: ProfileV2Service
+    private profileService: ProfileV2Service,
+    private signupService: SignupService,
+    private events: EventService
   ) {
 
     if (localStorage.getItem('websiteLanguage')) {
@@ -323,7 +326,8 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getMasterLanguage()
     this.getGroupData()
     // this.getProfilePageMetaData()
-    this.loadDesignations()
+    //this.loadDesignations()
+    this.getMasterDesignation()
     this.getSendApprovalStatus()
     this.getRejectedStatus()
     this.getApprovedFields()
@@ -997,6 +1001,10 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userProfileService.editProfileDetails(payload)
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((_res: any) => {
+        // update cadre details in config service to enroll into Blended programs
+        if (this.configService.unMappedUser && this.configService.unMappedUser.profileDetails) {
+          this.configService.unMappedUser.profileDetails.cadreDetails = payload.request.profileDetails.cadreDetails
+        }
         this.matSnackBar.open(this.handleTranslateTo('userDetailsUpdated'))
         this.portalProfile.personalDetails.isCadre = this.isCadreStatus
         this.editDetails = !this.editDetails
@@ -1083,6 +1091,34 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       (_err: any) => {
       })
+  }
+
+  async getMasterDesignation() {
+    this.signupService.getOrgReadData(this.orgId).subscribe((result: any) => {
+      if (result && result.frameworkid) {
+        this.signupService.getFrameworkInfo(result.frameworkid).subscribe((res: any) => {
+          const frameworkDetails = _.get(res, 'result.framework')
+          const categoriesOfFramework = _.get(frameworkDetails, 'categories', [])
+          const organisationsList = this.getTermsByCode(categoriesOfFramework, 'org')
+          const disOrderedList = _.get(organisationsList, '[0].children', [])
+          this.designationsMeta = _.sortBy(disOrderedList, 'name')
+          this.filterDesignationsMeta = this.designationsMeta
+        },(error: any) => {
+          // tslint:disable-next-line
+          console.error('Error occurred:', error)
+        })
+      }
+    },(error: any) => {
+      // tslint:disable-next-line
+      console.error('Error occurred:', error)
+    })
+  }
+
+  private getTermsByCode(categories: any[], code: string) {
+    const selectedCategory = categories.filter(
+      (category: any) => category.code === code
+    );
+    return _.get(selectedCategory, '[0].terms', []);
   }
 
   // getProfilePageMetaData(): void {
@@ -1271,7 +1307,11 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.portalProfile.professionalDetails[0].group !== this.primaryDetailsForm.get('group')!.value ||
         this.portalProfile.professionalDetails[0].designation !== this.primaryDetailsForm.get('designation')!.value
       ) {
-        return true
+        if (this.designationsMeta.find((obj: any) => obj.name.toLowerCase() === this.primaryDetailsForm.get('designation')!.value.toLowerCase())) {
+          return true
+        } else {
+          return false
+        }
       }
       if ((this.portalProfile.professionalDetails[0].group !== this.primaryDetailsForm.get('group')!.value) &&
         ((this.designationApprovedTime <= (this.rejectedFields.groupRejectionTime + 100) &&
@@ -1286,7 +1326,6 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
           this.GroupAndDesignationApproved)) {
         return true
       }
-
       return false
 
     } if (this.primaryDetailsForm.get('group')!.value && this.primaryDetailsForm.get('designation')!.value) {
@@ -1350,13 +1389,27 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
           this.enableWR = true
           this.portalProfile.verifiedKarmayogi = false
           this.getSendApprovalStatus()
+          this.raiseTelemetry(this.primaryDetailsForm.value['designation'])
         },         (error: HttpErrorResponse) => {
           if (!error.ok) {
             this.matSnackBar.open(this.handleTranslateTo('transferRequestFailed'))
           }
         })
     }
+  }
 
+  raiseTelemetry(designation: any) {
+    this.events.raiseInteractTelemetry(
+      {
+        type: 'click',
+        subType: designation,
+        id: 'designation-master-import',
+      },
+      {},
+      {
+        module: WsEvents.EnumTelemetrymodules.PROFILE,
+      }
+    )
   }
 
   showWithdrawRequestPopup() {

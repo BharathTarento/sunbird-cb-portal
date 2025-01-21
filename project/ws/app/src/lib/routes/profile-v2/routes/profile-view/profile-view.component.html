@@ -200,6 +200,12 @@
                     <!-- Later I will delete it -->
                     <!-- <div class="flex justify-end primary-text" (click)="handleDesignationRequest()">{{ 'profileInfo.requestDesignation' | translate }}</div> -->
                   </div>
+                  <div class="note-container p-2">
+                    <div class="flex flex-start items-center gap-2">
+                      <mat-icon>info</mat-icon>
+                      <div class="designation-note" [innerHTML]="'profileInfo.designationHint' | translate"></div>
+                    </div>
+                  </div>
                 </ng-container>
               </ng-container>
             </div>
@@ -488,7 +494,7 @@
               </div>
               <div class="info-div" *ngIf="noCadreDetails">
                 <div class="label">
-                  {{ 'profileInfo.isCadre' | translate }}
+                  {{ 'profileInfo.fromGovOrganization' | translate }}
                 </div>
                 <div class="info-value" *ngIf="!editDetails">
                   <span *ngIf="!portalProfile.hasOwnProperty('cadreDetails') || !portalProfile?.personalDetails.hasOwnProperty('isCadre'); else elsCadreDetails">NA</span>

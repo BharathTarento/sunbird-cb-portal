@@ -14,6 +14,7 @@ import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack
 /* tslint:disable */
 import _ from 'lodash'
 import { TranslateService } from '@ngx-translate/core'
+import { SignupService } from 'src/app/routes/public/public-signup/signup.service'
 
 const MOBILE_PATTERN = /^[0]?[6789]\d{9}$/
 const PIN_CODE_PATTERN = /^[1-9][0-9]{5}$/
@@ -34,8 +35,8 @@ export class EnrollProfileFormComponent implements OnInit {
   userDetailsForm: FormGroup
   groupData: any | undefined
   private destroySubject$ = new Subject()
-  designationsMeta: any
-  filterDesignationsMeta: any
+  designationsMeta: any = []
+  filterDesignationsMeta: any = []
   eUserGender = Object.keys(NsUserProfileDetails.EUserGender)
   masterLanguages: any
   masterLanguageBackup: any
@@ -138,6 +139,7 @@ export class EnrollProfileFormComponent implements OnInit {
     private otpService: OtpService,
     private npsSvc: NPSGridService,
     private translateService: TranslateService,
+    private signupService: SignupService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
 
@@ -292,6 +294,43 @@ export class EnrollProfileFormComponent implements OnInit {
       }
     }
     this.openDesignationDropdown = true
+  }
+
+  async getMasterDesignation() {
+    this.signupService.getOrgReadData(this.userProfileObject.rootOrgId).subscribe((result: any) => {
+      if (result && result.frameworkid) {
+        this.signupService.getFrameworkInfo(result.frameworkid).subscribe((res: any) => {
+          const frameworkDetails = _.get(res, 'result.framework')
+          const categoriesOfFramework = _.get(frameworkDetails, 'categories', [])
+          const organisationsList = this.getTermsByCode(categoriesOfFramework, 'org')
+          const disOrderedList = _.get(organisationsList, '[0].children', [])
+          this.designationsMeta = _.sortBy(disOrderedList, 'name')
+          this.filterDesignationsMeta = this.designationsMeta
+          if (this.canShowDesignation) {
+            let field = this.userDetailsForm.get('designation')
+            if (field && field.value) {
+              let _value = field.value.toLowerCase()
+              if (!this.designationsMeta.find((d: any)=> d.name.toLowerCase() === _value)) {
+                field.patchValue('')
+              }
+            }
+          }
+        },(error: any) => {
+          // tslint:disable-next-line
+          console.error('Error occurred:', error)
+        })
+      }
+    },(error: any) => {
+      // tslint:disable-next-line
+      console.error('Error occurred:', error)
+    })
+  }
+
+  private getTermsByCode(categories: any[], code: string) {
+    const selectedCategory = categories.filter(
+      (category: any) => category.code === code
+    );
+    return _.get(selectedCategory, '[0].terms', []);
   }
 
   preventBlur(event: MouseEvent): void {
@@ -505,7 +544,8 @@ export class EnrollProfileFormComponent implements OnInit {
     this.getGroupData()
     this.getPendingDetails()
     setTimeout(() => {
-      this.loadDesignations()
+      //this.loadDesignations()
+      this.getMasterDesignation()
       this.getMasterLanguage()
     }, 500)
   }
@@ -642,16 +682,18 @@ export class EnrollProfileFormComponent implements OnInit {
     this.selectedServiceName = event.value
     if (this.serviceListData) {
       this.selectedService = this.serviceListData.find((service: any) => service.name === this.selectedServiceName)
-      this.civilServiceName =  this.selectedService.name
-      this.civilServiceId = this.selectedService.id
-      this.cadre = this.selectedService.cadreList.map((cadre: any) => cadre.name)
+      if (this.selectedService) {
+        this.civilServiceName =  this.selectedService.name
+        this.civilServiceId = this.selectedService.id
+        this.cadre = this.selectedService.cadreList ? this.selectedService.cadreList.map((cadre: any) => cadre.name) : []
+      }
     }
     if (this.selectedService && this.selectedService.cadreControllingAuthority) {
       this.cadreControllingAuthority = this.selectedService.cadreControllingAuthority
     } else {
       this.cadreControllingAuthority = 'NA'
     }
-    if (this.selectedService && this.selectedService.cadreList && this.selectedService.cadreList.length === 0) {
+    if (this.selectedService && this.selectedService.cadreList.length === 0) {
       this.showBatchForNoCadre = true
       this.startBatch = this.selectedService.commonBatchStartYear
       this.endBatch = this.selectedService.commonBatchEndYear
@@ -981,7 +1023,9 @@ export class EnrollProfileFormComponent implements OnInit {
               setTimeout(() => {
                 this.getService(this.userProfileObject.profileDetails.cadreDetails.civilServiceType)
                 this.onServiceSelect({value: this.userProfileObject.profileDetails.cadreDetails.civilServiceName})
-                this.onCadreSelect(this.userProfileObject.profileDetails.cadreDetails.cadreName)
+                if (this.userProfileObject.profileDetails.cadreDetails.cadreName) {
+                  this.onCadreSelect(this.userProfileObject.profileDetails.cadreDetails.cadreName)
+                }
                 this.userDetailsForm.patchValue({
                   typeOfCivilService: this.userProfileObject.profileDetails.cadreDetails.civilServiceType,
                   serviceType: this.userProfileObject.profileDetails.cadreDetails.civilServiceName,

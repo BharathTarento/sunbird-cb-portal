@@ -34,7 +34,8 @@ export class AppEnrollmentResolverService
         } else {
             let request: any = {
                 "request": {
-                    "courseId": _route.queryParams.collectionId,
+                    "retiredCoursesEnabled": true,
+                    "courseId": [_route.queryParams.collectionId],
                 }
               }
             return  this.http.post(`${ENROLL_CONTENT_DATA}/${userId}`,request).pipe(
