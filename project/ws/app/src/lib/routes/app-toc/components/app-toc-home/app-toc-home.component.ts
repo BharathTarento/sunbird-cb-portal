@@ -306,6 +306,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
   }
 
   ngOnInit() {
+    this.dataTransferSvc.setEnrollData(null)
     this.mobile1200 = window.innerWidth < 1201
     this.configSvc.languageTranslationFlag.subscribe((data: any) => {
       if (data) {
@@ -1992,6 +1993,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
     let identifier = this.content && this.content.identifier || ''
     let request: any = {
       "request": {
+        "retiredCoursesEnabled": true,
           "courseId": [identifier]
       }
     }
@@ -2006,6 +2008,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
           if(urlData && urlData.url && urlData.url.includes('app/toc')) {
             this.checkIfUserEnrolled()
           } else {
+            this.contentLibSvc.oneStepResumeEnable = false
             if (urlData && urlData.url ) {
               this.router.navigate(
                 [urlData.url],
@@ -2015,7 +2018,6 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
             }
           }
           
-          this.contentLibSvc.oneStepResumeEnable = false
         } else {
         this.checkIfUserEnrolled()
         }
@@ -2028,6 +2030,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
 
 
   async checkIfUserEnrolled() {
+    this.contentLibSvc.oneStepResumeEnable = false
     this.enrollBtnLoading = true
     this.tocSvc.contentLoader.next(true)
     // tslint:disable-next-line
@@ -2133,7 +2136,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
         }
         this.tocSvc.callHirarchyProgressHashmap(this.content)
         this.enrollBtnLoading = false
-        // this.tocSvc.contentLoader.next(false)
+        this.tocSvc.contentLoader.next(false)
       }
     }
 
