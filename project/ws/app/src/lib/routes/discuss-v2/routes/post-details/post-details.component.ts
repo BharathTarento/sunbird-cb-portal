@@ -9,6 +9,7 @@ import { NsDiscussionV2 } from '@sunbird-cb/discussion-v2';
 })
 export class PostDetailsComponent implements OnInit {
   widgetData: NsDiscussionV2.IDiscussV2WidgetData | null = null
+  discussionId!: string
   constructor(private activatedRoute: ActivatedRoute) {
 
   }
@@ -16,6 +17,7 @@ export class PostDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       console.log(params['discussionId'])
+      this.discussionId = params['discussionId']
     })
   }
 }
