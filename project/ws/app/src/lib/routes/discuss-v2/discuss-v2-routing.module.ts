@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DiscussV2HomeComponent } from './routes/discuss-v2-home/discuss-v2-home.component';
 import { PostDetailsComponent } from './routes/post-details/post-details.component';
+import { CommunityDetailsHomeComponent } from './routes/community-details-home/community-details-home.component';
 
 const routes: Routes = [
   {
@@ -21,8 +22,18 @@ const routes: Routes = [
       pageId: 'discussion-forum',
       module: 'Discuss',
     },
+  },
+  {
+    path: 'community/:communityId',
+    // loadChildren: () => import('./wrapper/wrapper.module').then(u => u.WrapperModule),
+    component: CommunityDetailsHomeComponent,
+    data: {
+      pageId: 'discussion-forum',
+      module: 'Discuss',
+    },
   }
 ]
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
