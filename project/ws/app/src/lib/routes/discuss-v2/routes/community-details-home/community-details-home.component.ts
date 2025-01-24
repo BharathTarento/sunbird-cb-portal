@@ -204,7 +204,7 @@ export class CommunityDetailsHomeComponent {
     ]
   }
   constructor(private activatedRoute: ActivatedRoute) {
-    debugger
+    
     this.activatedRoute.params.subscribe(params => {
       this.communityId = params.communityId
     })

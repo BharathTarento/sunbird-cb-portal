@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ws-app-discuss-v2-home',
@@ -63,4 +64,17 @@ export class DiscussV2HomeComponent {
     },
     // Add more discussions...
   ]
+
+
+  constructor(private router: Router) { }
+  searchTextMethod(searchTxt: any) {
+    
+    console.log(event, 'searchTextMethod')
+    this.router.navigate(['/app/discussion-forum-v2/search'], {
+      queryParams: { c: searchTxt.trim() }
+    })
+  }
+  showAllCommunityByTopic(topic: string) {
+    this.router.navigate([`/app/discussion-forum-v2/all/${topic}`])
+  }
 }
